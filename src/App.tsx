@@ -1,5 +1,11 @@
+import { Button } from './components/ui/Button';
+
 function App() {
-  return <></>;
+  return (
+    <>
+      <Button onClick={() => {}} children="sdsd" />
+    </>
+  );
 }
 
 export default App;

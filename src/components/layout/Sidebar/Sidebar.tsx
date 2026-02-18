@@ -1,3 +1,12 @@
+import {
+  Binary,
+  CalendarCheck,
+  Clapperboard,
+  CloudSun,
+  Coins,
+  Grid3X3Icon,
+  ListTodo,
+} from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
 
@@ -36,13 +45,45 @@ export const Sidebar = () => {
             variant="secondary"
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
           >
-            <span>To-Do List</span>
+            <ListTodo
+              size={20}
+              className="stroke-[1.5px]"
+            />
+            <span>Todo App</span>
           </Button>
           <Button
             variant="secondary"
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
           >
-            <span>Калькулятор</span>
+            <CalendarCheck
+              size={20}
+              className="stroke-[1.5px]"
+            />
+            <span>Habit Tracker</span>
+          </Button>
+          <Button
+            variant="secondary"
+            className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
+          >
+            <CloudSun size={20} className="stroke-[1.5]" />
+            <span>Weather App</span>
+          </Button>
+          <Button
+            variant="secondary"
+            className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
+          >
+            <Clapperboard
+              size={20}
+              className="stroke-[1.5px]"
+            />
+            <span>Movie Search</span>
+          </Button>
+          <Button
+            variant="secondary"
+            className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
+          >
+            <Coins size={20} className="stroke-[1.5px]" />
+            <span>Crypto Track</span>
           </Button>
         </section>
 
@@ -55,13 +96,18 @@ export const Sidebar = () => {
             variant="secondary"
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
           >
-            <span>Крестики-нолики</span>
+            <Grid3X3Icon
+              size={20}
+              className="stroke-[1.5px]"
+            />
+            <span>Tic Tac Toe</span>
           </Button>
           <Button
             variant="secondary"
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
           >
-            <span>Угадай число</span>
+            <Binary size={20} className="stroke-[1.5px]" />
+            <span>Guess Number</span>
           </Button>
         </section>
       </nav>

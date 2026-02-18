@@ -1,7 +1,7 @@
 import { MainLayout } from './components/layout/MainLayout';
 import { ProjectCard } from './components/ui/ProjectCard';
 
-import { PROJECTS } from './Dashboard';
+import { PROJECTS } from '../pages/Dashboard';
 
 function App() {
   return (

@@ -1,16 +1,30 @@
-import { Button } from './components/ui/Button';
-import { Input } from './components/ui/Input';
+import { MainLayout } from './components/layout/MainLayout';
 
 function App() {
   return (
     <>
-      <Button>dsfdf</Button>
-      <Button variant="danger">HHHHH</Button>
-      <Button variant="secondary" disabled>
-        OOOO
-      </Button>
+      <MainLayout>
+        <div className="gap-md flex flex-col items-center text-center">
+          <h1 className="text-text-primary text-2xl font-bold">
+            Мои тренировки
+          </h1>
+          <p className="text-text-secondary">
+            Здест скоро будет сетка с карточками проектов
+          </p>
 
-      <Input placeholder="Введите что нибудь" />
+          <div className="gap-sm mt-4 flex">
+            <div className="p-xl bg-card rounded-box border-border-color">
+              Карточка 1
+            </div>
+            <div className="p-xl bg-card rounded-box border-border-color">
+              Карточка 2
+            </div>
+            <div className="p-xl bg-card rounded-box border-border-color">
+              Карточка 3
+            </div>
+          </div>
+        </div>
+      </MainLayout>
     </>
   );
 }

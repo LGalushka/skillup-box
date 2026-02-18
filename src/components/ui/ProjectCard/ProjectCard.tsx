@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom';
+
 interface ProjectCardProps {
   title: string;
   description: string;
   category: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
+  path?: string;
 }
 
 export const ProjectCard = ({
@@ -10,9 +13,21 @@ export const ProjectCard = ({
   description,
   category,
   difficulty,
+  path,
 }: ProjectCardProps) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (path) {
+      navigate(path);
+    }
+  };
   return (
-    <div className="group bg-card border-border-color p-lg rounded-box duration-normal hover:border-primary/50 gap-md flex cursor-pointer flex-col transition-all hover:-translate-y-1 hover:shadow-md">
+    <div
+      className={`group bg-card border-border-color p-lg rounded-box duration-normal hover:border-primary/50 gap-md flex cursor-pointer flex-col transition-all hover:-translate-y-1 hover:shadow-md ${
+        path ? 'cursor-pointer' : 'cursor-default' // меняем курсор в зависимости от наличия пути
+      }`}
+      onClick={handleClick}
+    >
       {/* Категория и сложность */}
       <div className="flex items-center justify-between">
         <span className="text-primary text-[10px] font-bold tracking-widest uppercase">

@@ -1,19 +1,20 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
-import { ProjectCard } from './components/ui/ProjectCard';
-
-import { PROJECTS } from '../pages/Dashboard';
+import { HomePage } from './pages/HomePage/HomePage';
 
 function App() {
   return (
-    <>
-      <MainLayout>
-        <div className="gap-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((project) => (
-            <ProjectCard key={project.title} {...project} />
-          ))}
-        </div>
-      </MainLayout>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<HomePage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

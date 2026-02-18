@@ -3,6 +3,7 @@ type Project = {
   description: string;
   category: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
+  path?: string;
 };
 
 export const PROJECTS: Project[] = [
@@ -12,6 +13,7 @@ export const PROJECTS: Project[] = [
       'Классическое приложение для управления задачами. Работа с массивами и формами.',
     category: 'Утилиты',
     difficulty: 'Easy',
+    path: '/todo',
   },
   {
     title: 'Калькулятор',
@@ -26,6 +28,7 @@ export const PROJECTS: Project[] = [
       'Первая игра на React. Логика победных комбинаций и переключение ходов.',
     category: 'Игры',
     difficulty: 'Medium',
+    path: '/tictac',
   },
   {
     title: 'Крестики-нолики',

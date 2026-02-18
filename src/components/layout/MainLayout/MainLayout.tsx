@@ -1,15 +1,9 @@
-import type { ReactNode } from 'react';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Sidebar } from '../Sidebar';
+import { Outlet } from 'react-router-dom';
 
-interface MainLayoutProps {
-  children: ReactNode; //сюда будет попадать контект страницы
-}
-
-export const MainLayout = ({
-  children,
-}: MainLayoutProps) => {
+export const MainLayout = () => {
   return (
     <div className="bg-main flex h-screen overflow-hidden">
       {/**Левая часть: Сайдбар (фиксированный) */}
@@ -20,7 +14,8 @@ export const MainLayout = ({
 
         {/**Основной контент сраница */}
         <main className="p-lg mx-auto w-full max-w-7xl flex-1">
-          {children}
+          <Outlet />{' '}
+          {/* Здесь будут открываться страницы */}
         </main>
 
         {/**footer */}

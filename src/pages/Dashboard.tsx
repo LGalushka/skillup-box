@@ -1,40 +1,85 @@
+import {
+  Binary,
+  CalendarCheck,
+  Clapperboard,
+  CloudSun,
+  Coins,
+  Grid3X3,
+  ListTodo,
+  type LucideIcon,
+} from 'lucide-react';
+
 type Project = {
   title: string;
+  icon: LucideIcon;
   description: string;
   category: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
-  path?: string;
+  path: string;
 };
 
 export const PROJECTS: Project[] = [
   {
-    title: 'To-Do List',
+    title: 'To-Do App',
+    icon: ListTodo,
     description:
-      'Классическое приложение для управления задачами. Работа с массивами и формами.',
+      'Эффективное управление задачами: CRUD операции, фильтрация и локальное хранение данных.',
     category: 'Утилиты',
     difficulty: 'Easy',
     path: '/todo',
   },
   {
-    title: 'Калькулятор',
+    title: 'Habit Tracker',
+    icon: CalendarCheck,
     description:
-      'Математическая логика и сложная обработка состояний (useState).',
-    category: 'Утилиты',
+      'Система мониторинга привычек с визуализацией прогресса и работой с датами.',
+    category: 'Продуктивность',
     difficulty: 'Medium',
+    path: '/habit',
   },
   {
-    title: 'Крестики-нолики',
+    title: 'Weather App',
+    icon: CloudSun,
     description:
-      'Первая игра на React. Логика победных комбинаций и переключение ходов.',
-    category: 'Игры',
+      'Прогноз погоды в реальном времени. Работа с внешними API, асинхронными запросами и JSON.',
+    category: 'Сервисы',
     difficulty: 'Medium',
+    path: '/weather',
+  },
+  {
+    title: 'Movie Search',
+    icon: Clapperboard,
+    description:
+      'Поиск фильмов по базе данных. Реализация динамического поиска и детальных карточек контента.',
+    category: 'Медиа',
+    difficulty: 'Medium',
+    path: '/movies',
+  },
+  {
+    title: 'Crypto Track',
+    icon: Coins,
+    description:
+      'Мониторинг курсов криптовалют. Обработка больших массивов данных и работа с WebSocket или API.',
+    category: 'Финансы',
+    difficulty: 'Hard',
+    path: '/crypto',
+  },
+  {
+    title: 'Tic Tac Toe',
+    icon: Grid3X3,
+    description:
+      'Классическая игра: алгоритм проверки победителя, состояние игрового поля и история ходов.',
+    category: 'Игры',
+    difficulty: 'Easy',
     path: '/tictac',
   },
   {
-    title: 'Крестики-нолики',
+    title: 'Guess Number',
+    icon: Binary,
     description:
-      'Первая игра на React. Логика победных комбинаций и переключение ходов.',
+      'Игра на угадывание числа. Логика случайных чисел, валидация ввода и обработка попыток.',
     category: 'Игры',
-    difficulty: 'Medium',
+    difficulty: 'Easy',
+    path: '/guess',
   },
 ];

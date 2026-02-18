@@ -1,0 +1,1 @@
+export { GuessNumber } from './GuessNumber';

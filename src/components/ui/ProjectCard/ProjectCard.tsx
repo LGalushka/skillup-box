@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface ProjectCardProps {
@@ -5,7 +6,8 @@ interface ProjectCardProps {
   description: string;
   category: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
-  path?: string;
+  path: string;
+  icon: LucideIcon;
 }
 
 export const ProjectCard = ({
@@ -14,6 +16,7 @@ export const ProjectCard = ({
   category,
   difficulty,
   path,
+  icon: Icon,
 }: ProjectCardProps) => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -48,9 +51,15 @@ export const ProjectCard = ({
 
       {/* Контент*/}
       <div>
-        <h3 className="text-text-primary group-hover:text-primary text-lg font-bold transition-colors">
-          {title}
-        </h3>
+        <div className="mb-2 flex items-center gap-3">
+          <Icon
+            size={24}
+            className="text-text-secondary group-hover:text-primary shrink-0 transition-colors duration-300"
+          />
+          <h3 className="text-text-primary group-hover:text-primary text-lg font-bold transition-colors duration-300">
+            {title}
+          </h3>
+        </div>
         <p className="text-text-secondary mt-1 text-sm leading-relaxed">
           {description}
         </p>

@@ -1,27 +1,34 @@
-:root {
+@import 'tailwindcss';
+
+@theme {
   /* === Цвета фона === */
-  --bg-main: #0f172a; /* глубокий тёмно-синий (основной фон) */
-  --bg-card: #1e293b; /* карточки, сайдбар, хедер */
-  --bg-input: #0f172a; /* фон инпутов */
-  --bg-button-primary: #3b82f6; /* основные кнопки */
-  --bg-button-primary-hover: #2563eb;
-  --bg-button-secondary: #475569; /* второстепенные кнопки */
-  --bg-button-secondary-hover: #334155;
-  --bg-button-danger: #ef4444; /* опасные действия */
-  --bg-button-danger-hover: #dc2626;
+  --color-main: #0f172a;
+  --color-card: #1e293b;
+  --color-input: #0f172a;
 
-  /* === Цвета текста === */
-  --text-primary: #e2e8f0; /* основной текст */
-  --text-secondary: #94a3b8; /* второстепенный текст */
-  --text-light: #ffffff; /* белый текст */
+  /* === Кнопки === */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-secondary: #475569;
+  --color-secondary-hover: #334155;
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
 
-  /* === Границы и тени === */
-  --border-color: #334155;
-  --border-radius: 12px; /* фиксированный радиус для ВСЕГО */
+  /* === Текст === */
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-light: #ffffff;
+
+  /* === Границы и Тени === */
+  --color-border-color: #334155;
+
+  --radius-box-xs: 4px;
+  --radius-box-sm: 8px;
+  --radius-box-md: 12px;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
 
-  /* === Размеры === */
+  /* === Размеры (Spacing) === */
   --spacing-xs: 0.25rem; /* 4px */
   --spacing-sm: 0.5rem; /* 8px */
   --spacing-md: 1rem; /* 16px */
@@ -29,41 +36,27 @@
   --spacing-xl: 2rem; /* 32px */
 
   /* === Типографика === */
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-md: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
+  --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
 
-  /* === Анимации === */
-  --transition-fast: 0.2s;
-  --transition-normal: 0.3s;
+  /* === Анимации (Transitions) === */
+  --animate-fast: 0.2s ease-in-out;
+  --animate-normal: 0.3s ease-in-out;
 }
 
-/* =============== СБРОС СТИЛЕЙ =============== */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  font-family: var(--font-family);
-  min-height: 100vh;
-}
-
-/* =============== УНИВЕРСАЛЬНЫЕ КЛАССЫ =============== */
-.card {
-  background-color: var(--bg-card);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
+/* Применяем базовые стили к body */
+@layer base {
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-main);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-main);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }

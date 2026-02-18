@@ -1,16 +1,26 @@
-import styles from './Button.module.css';
+import type React from 'react';
 
-interface ButtonProps {
-  children: string;
-  onClick: () => void;
-  disabled?: boolean;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger';
 }
 
-export const Button = ({ children, onClick, variant = 'primary', disabled }: ButtonProps) => {
-  const variantClass = styles[`btn-${variant}`] || styles['btn-primary'];
+export const Button = ({
+  children,
+  variant = 'primary',
+  className = '',
+  ...props
+}: ButtonProps) => {
+  const baseStyles =
+    'px-lg py-sm rounded-box-sm font-medium transition-all duration-100 flex items-center justify-center cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed';
+
+  const variants = {
+    primary: 'bg-primary hover:bg-primary-hover text-text-light shadow-sm',
+    secondary: 'bg-secondary hover:bg-secondary-hover text-text-primary',
+    danger: 'bg-danger hover:bg-danger-hover text-text-light',
+  };
+
   return (
-    <button className={`${styles.btn} ${variantClass}`} onClick={onClick} disabled={disabled}>
+    <button className={`${baseStyles} ${variants[variant]} ${className}`} {...props}>
       {children}
     </button>
   );

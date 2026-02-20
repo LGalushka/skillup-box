@@ -1,4 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Plus } from 'lucide-react';
@@ -65,7 +70,7 @@ export const TodoApp = () => {
     setNewTask('');
   };
 
-  const deleteTask = (id: string) => {
+  const deleteTask = useCallback((id: string) => {
     const todoDelete = todos.find((t) => t.id === id);
     if (todoDelete) {
       const isConfirmed = window.confirm(
@@ -75,17 +80,17 @@ export const TodoApp = () => {
         setTodos(todos.filter((todo) => todo.id !== id));
       }
     }
-  };
+  }, []);
 
-  const toggleTodo = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
+  const toggleTodo = useCallback((id: string) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
         todo.id === id
           ? { ...todo, completed: !todo.completed }
           : todo
       )
     );
-  };
+  }, []);
 
   const updateTodo = <K extends keyof Todo>(
     id: string,
@@ -244,11 +249,11 @@ export const TodoApp = () => {
             </span>
           </div>
         ) : (
-          filteredTodos.map((item) => (
+          filteredTodos.map((todo) => (
             <TodoItem
-              key={item.id}
-              item={item}
-              isEditing={editId === item.id}
+              key={todo.id}
+              item={todo}
+              isEditing={editId === todo.id}
               onToggle={toggleTodo}
               onDelete={deleteTask}
               onEdit={setEditId}

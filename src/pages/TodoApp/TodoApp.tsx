@@ -9,6 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { Plus } from 'lucide-react';
 import { TodoItem } from './components/TodoItem';
 import { TodoFilter } from './components/TodoFilter';
+import { TodoStats } from './components/TodoStats';
 
 export interface Todo {
   id: string;
@@ -18,27 +19,6 @@ export interface Todo {
 }
 
 export type Filter = 'all' | 'active' | 'completed';
-
-interface StatCardProps {
-  label: string;
-  value: number | string;
-  colorClass?: string;
-}
-
-const StatCard = ({
-  label,
-  value,
-  colorClass = '',
-}: StatCardProps) => (
-  <div className="bg-card border-border-color p-md rounded-xl border shadow-sm">
-    <p className="text-text-secondary text-[10px] font-bold tracking-widest uppercase">
-      {label}
-    </p>
-    <p className={`text-2xl font-black ${colorClass}`}>
-      {value}
-    </p>
-  </div>
-);
 
 export const TodoApp = () => {
   const [todos, setTodos] = useState<Todo[]>(() => {
@@ -152,8 +132,6 @@ export const TodoApp = () => {
   return (
     <div className="p-lg mx-auto flex max-w-2xl flex-col gap-10">
       {' '}
-      {/* Уменьшил max-width до 2xl для компактности */}
-      {/* Шапка: вернем к левому краю и добавим акцент */}
       <header className="border-primary flex flex-col gap-1 border-l-4 pl-4">
         <h1 className="text-3xl font-black tracking-tighter text-white uppercase italic">
           MY TASKS
@@ -162,28 +140,8 @@ export const TodoApp = () => {
           REACT JOURNEY • УПРАВЛЕНИЕ ЗАДАЧАМИ
         </p>
       </header>
-      {/* Статистика: сделаем их чуть меньше и аккуратнее */}
-      <section className="grid grid-cols-3 gap-4">
-        <StatCard label="Всего" value={stats.total} />
-        <StatCard
-          label="В работе"
-          value={`${stats.active} (${stats.percentActive}%)`}
-          colorClass={
-            stats.active === 0
-              ? 'text-text-light'
-              : 'text-primary'
-          }
-        />
-        <StatCard
-          label="Готово"
-          value={`${stats.completed} (${stats.percentCompleted}%)`}
-          colorClass={
-            stats.completed === 0
-              ? 'text-text-light'
-              : 'text-primary'
-          }
-        />
-      </section>
+      {/* Статистика */}
+      <TodoStats stats={stats} />
       {/* Поле ввода: УБИРАЕМ лишний фон-карточку, оставляем только Gap */}
       <div className="flex flex-col gap-6">
         <form
@@ -211,12 +169,12 @@ export const TodoApp = () => {
           </Button>
         </form>
 
-        {/* Фильтры: сделаем их совсем маленькими и аккуратными */}
+        {/* Фильтры*/}
         <TodoFilter
           currentFilter={filter}
           onFilterChange={handleFilterChange}
         />
-        {/* Список задач: добавим разделители или чуть больше отступов */}
+        {/* Список задач */}
         <ul className="flex flex-col gap-3 pb-20">
           {filteredTodos.length === 0 ? (
             <div className="border-border-color flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-12 opacity-50">

@@ -9,6 +9,7 @@ import { TodoFilter } from './components/TodoFilter';
 import { TodoStats } from './components/TodoStats';
 import { TodoForm } from './components/TodoForm';
 import { TodoList } from './components/TodoList';
+import { useLocalStorage } from './hooks';
 
 export interface Todo {
   id: string;
@@ -20,18 +21,10 @@ export interface Todo {
 export type Filter = 'all' | 'active' | 'completed';
 
 export const TodoApp = () => {
-  const [todos, setTodos] = useState<Todo[]>(() => {
-    const saved = localStorage.getItem('todoApp');
-    try {
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('todoApp', JSON.stringify(todos));
-  }, [todos]);
+  const [todos, setTodos] = useLocalStorage<Todo[]>(
+    'todoApp',
+    []
+  );
 
   const [newTask, setNewTask] = useState<string>('');
   const [filter, setFilter] = useState<Filter>('all');

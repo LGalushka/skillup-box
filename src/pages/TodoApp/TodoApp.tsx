@@ -8,6 +8,7 @@ import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Plus } from 'lucide-react';
 import { TodoItem } from './components/TodoItem';
+import { TodoFilter } from './components/TodoFilter';
 
 export interface Todo {
   id: string;
@@ -16,7 +17,7 @@ export interface Todo {
   createdAt: string;
 }
 
-type Filter = 'all' | 'active' | 'completed';
+export type Filter = 'all' | 'active' | 'completed';
 
 interface StatCardProps {
   label: string;
@@ -115,9 +116,12 @@ export const TodoApp = () => {
     }
   }, [todos, filter]);
 
-  const handleFilterChange = (newFilter: Filter) => {
-    setFilter(newFilter);
-  };
+  const handleFilterChange = useCallback(
+    (newFilter: Filter) => {
+      setFilter(newFilter);
+    },
+    []
+  );
 
   const handleSave = () => {
     setEditId(null);
@@ -208,64 +212,44 @@ export const TodoApp = () => {
         </form>
 
         {/* Фильтры: сделаем их совсем маленькими и аккуратными */}
-        <div className="flex items-center gap-2">
-          <span className="text-text-secondary mr-2 text-[10px] font-bold tracking-widest uppercase">
-            Фильтр:
-          </span>
-          {(['all', 'active', 'completed'] as Filter[]).map(
-            (f) => (
-              <button
-                key={f}
-                onClick={() => handleFilterChange(f)}
-                className={`rounded-full border px-5 py-3 text-xs font-bold transition-all ${
-                  filter === f
-                    ? 'bg-primary border-primary text-black'
-                    : 'border-border-color text-text-secondary hover:border-primary/50'
-                }`}
-              >
-                {f === 'all'
-                  ? 'Все'
-                  : f === 'active'
-                    ? 'Активные'
-                    : 'Завершенные'}
-              </button>
-            )
+        <TodoFilter
+          currentFilter={filter}
+          onFilterChange={handleFilterChange}
+        />
+        {/* Список задач: добавим разделители или чуть больше отступов */}
+        <ul className="flex flex-col gap-3 pb-20">
+          {filteredTodos.length === 0 ? (
+            <div className="border-border-color flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-12 opacity-50">
+              <p className="text-sm font-medium">
+                {filter === 'all'
+                  ? 'Ваш список дел пуст'
+                  : filter === 'active'
+                    ? 'Нет активных задач'
+                    : 'У вас нет завершенных дел'}
+              </p>
+              <span className="text-[10px] tracking-widest uppercase">
+                Отличная работа!!!
+              </span>
+            </div>
+          ) : (
+            filteredTodos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                item={todo}
+                isEditing={editId === todo.id}
+                onToggle={toggleTodo}
+                onDelete={deleteTask}
+                onEdit={setEditId}
+                onUpdate={(id, title) =>
+                  updateTodo(id, 'title', title)
+                }
+                onCancel={() => setEditId(null)}
+                onSave={handleSave}
+              />
+            ))
           )}
-        </div>
+        </ul>
       </div>
-      {/* Список задач: добавим разделители или чуть больше отступов */}
-      <ul className="flex flex-col gap-3 pb-20">
-        {filteredTodos.length === 0 ? (
-          <div className="border-border-color flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-12 opacity-50">
-            <p className="text-sm font-medium">
-              {filter === 'all'
-                ? 'Ваш список дел пуст'
-                : filter === 'active'
-                  ? 'Нет активных задач'
-                  : 'У вас нет завершенных дел'}
-            </p>
-            <span className="text-[10px] tracking-widest uppercase">
-              Отличная работа!!!
-            </span>
-          </div>
-        ) : (
-          filteredTodos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              item={todo}
-              isEditing={editId === todo.id}
-              onToggle={toggleTodo}
-              onDelete={deleteTask}
-              onEdit={setEditId}
-              onUpdate={(id, title) =>
-                updateTodo(id, 'title', title)
-              }
-              onCancel={() => setEditId(null)}
-              onSave={handleSave}
-            />
-          ))
-        )}
-      </ul>
     </div>
   );
 };

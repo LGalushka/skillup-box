@@ -7,7 +7,7 @@ interface TodoListProps {
   filter: Filter;
   editId: string | null;
   onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, title: string) => void;
   onEdit: (id: string) => void;
   onUpdate: (id: string, title: string) => void;
   onCancel: () => void;

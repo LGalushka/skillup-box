@@ -13,7 +13,7 @@ interface TodoItemProps {
   item: Todo;
   isEditing: boolean;
   onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, title: string) => void;
   onEdit: (id: string) => void;
   onUpdate: (id: string, title: string) => void;
   onCancel: () => void;
@@ -93,7 +93,7 @@ export const TodoItem = memo(
             </Button>
             <Button
               variant="secondary"
-              onClick={() => onDelete(item.id)}
+              onClick={() => onDelete(item.id, item.title)}
               className="hover:bg-destructive opacity-0 transition-all group-hover:opacity-100 hover:text-white"
             >
               <Trash2Icon size={16} />

@@ -1,6 +1,6 @@
 // чтобы Todo был доступен везде
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 
 export interface Todo {
@@ -16,8 +16,53 @@ export const useTodos = () => {
     []
   );
 
+  //состояние для модалки удаления внутри хука
+  const [deleteConfirmation, setDeleteConfirmation] =
+    useState<{
+      isOpen: boolean;
+      todoId: string | null;
+      todoTitle: string;
+    }>({
+      isOpen: false,
+      todoId: null,
+      todoTitle: '',
+    });
+
+  // функция которую вызовет кнопка удалить
+  const requestDelete = useCallback(
+    (id: string, title: string) => {
+      setDeleteConfirmation({
+        isOpen: true,
+        todoId: id,
+        todoTitle: title,
+      });
+    },
+    []
+  );
+
+  const cancelDelete = useCallback(() => {
+    setDeleteConfirmation({
+      isOpen: false,
+      todoId: null,
+      todoTitle: '',
+    });
+  }, []);
+
+  //финальное удаление
+  const confirmDelete = useCallback(() => {
+    if (deleteConfirmation.todoId) {
+      setTodos((prev) =>
+        prev.filter(
+          (t) => t.id !== deleteConfirmation.todoId
+        )
+      );
+      cancelDelete();
+    }
+  }, [deleteConfirmation.todoId, setTodos, cancelDelete]);
+
   const addTodo = useCallback(
     (title: string) => {
+      if (!title.trim()) return;
       const newTodo: Todo = {
         id: crypto.randomUUID(),
         title,
@@ -27,24 +72,6 @@ export const useTodos = () => {
       setTodos((prev) => [...prev, newTodo]);
     },
     [setTodos]
-  );
-
-  // удаление с подтверждением
-  const deleteTask = useCallback(
-    (id: string) => {
-      const todoToDelete = todos.find((t) => t.id === id);
-      if (!todoToDelete) return;
-
-      const isConfirmed = window.confirm(
-        `Удалить задачу "${todoToDelete.title}"?`
-      );
-      if (isConfirmed) {
-        setTodos((currentTodos) =>
-          currentTodos.filter((todo) => todo.id !== id)
-        );
-      }
-    },
-    [todos, setTodos]
   );
 
   // переключение статуса
@@ -98,8 +125,11 @@ export const useTodos = () => {
     todos,
     stats,
     addTodo,
-    deleteTask,
     toggleTodo,
     updateTodo,
+    deleteConfirmation,
+    requestDelete,
+    confirmDelete,
+    cancelDelete,
   };
 };

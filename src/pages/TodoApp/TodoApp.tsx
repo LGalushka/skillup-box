@@ -6,6 +6,7 @@ import {
   TodoForm,
   TodoList,
   TodoHeader,
+  TodoConfirmModal,
 } from './components';
 
 import { useTodos } from './hooks';
@@ -17,9 +18,12 @@ export const TodoApp = () => {
     todos,
     stats,
     addTodo,
-    deleteTask,
     toggleTodo,
     updateTodo,
+    deleteConfirmation,
+    requestDelete,
+    confirmDelete,
+    cancelDelete,
   } = useTodos();
 
   const [newTask, setNewTask] = useState<string>('');
@@ -67,11 +71,18 @@ export const TodoApp = () => {
           filter={filter}
           editId={editId}
           onToggle={toggleTodo}
-          onDelete={deleteTask}
+          onDelete={requestDelete}
           onEdit={setEditId}
           onUpdate={updateTodo}
           onCancel={() => setEditId(null)}
           onSave={() => setEditId(null)}
+        />
+
+        <TodoConfirmModal
+          isOpen={deleteConfirmation.isOpen}
+          title={deleteConfirmation.todoTitle}
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
         />
       </div>
     </div>

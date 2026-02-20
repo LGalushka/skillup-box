@@ -4,12 +4,11 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
-import { Plus } from 'lucide-react';
+
 import { TodoItem } from './components/TodoItem';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoStats } from './components/TodoStats';
+import { TodoForm } from './components/TodoForm';
 
 export interface Todo {
   id: string;
@@ -144,30 +143,11 @@ export const TodoApp = () => {
       <TodoStats stats={stats} />
       {/* Поле ввода: УБИРАЕМ лишний фон-карточку, оставляем только Gap */}
       <div className="flex flex-col gap-6">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (newTask.trim()) {
-              addTodo();
-            }
-          }}
-          className="flex gap-3"
-        >
-          <Input
-            autoFocus
-            value={newTask}
-            placeholder="Что нужно сделать?..."
-            className="border-border-color bg-card/50 focus:border-primary/50 h-12 flex-1 text-base"
-            onChange={(e) => setNewTask(e.target.value)}
-          />
-          <Button
-            type="submit"
-            disabled={!newTask.trim()}
-            className="shadow-primary/10 h-14 shadow-lg"
-          >
-            <Plus size={20} className="mr-2" /> Добавить
-          </Button>
-        </form>
+        <TodoForm
+          newTodo={newTask}
+          onTodoChange={setNewTask}
+          onAdd={addTodo}
+        />
 
         {/* Фильтры*/}
         <TodoFilter

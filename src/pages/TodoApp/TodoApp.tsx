@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-
+import { useTodos } from './hooks';
 import {
   TodoFilter,
   TodoStats,
@@ -8,8 +8,6 @@ import {
   TodoHeader,
   TodoConfirmModal,
 } from './components';
-
-import { useTodos } from './hooks';
 
 export type Filter = 'all' | 'active' | 'completed';
 
@@ -77,7 +75,7 @@ export const TodoApp = () => {
           onCancel={() => setEditId(null)}
           onSave={() => setEditId(null)}
         />
-
+        {/**модальное окно */}
         <TodoConfirmModal
           isOpen={deleteConfirmation.isOpen}
           title={deleteConfirmation.todoTitle}

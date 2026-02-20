@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
-import type { Todo } from '../hooks/useTodos';
+import type { Todo } from '../types';
 import { memo } from 'react';
 
 interface TodoItemProps {

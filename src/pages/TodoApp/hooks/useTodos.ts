@@ -2,13 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useLocalStorage } from './useLocalStorage';
-
-export interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  createdAt: string;
-}
+import type { Todo } from '../types';
 
 export const useTodos = () => {
   const [todos, setTodos] = useLocalStorage<Todo[]>(
@@ -50,15 +44,18 @@ export const useTodos = () => {
 
   //финальное удаление
   const confirmDelete = useCallback(() => {
-    if (deleteConfirmation.todoId) {
-      setTodos((prev) =>
-        prev.filter(
-          (t) => t.id !== deleteConfirmation.todoId
-        )
+    setDeleteConfirmation((prev) => {
+      if (!prev.todoId) return prev;
+      setTodos((current) =>
+        current.filter((t) => t.id !== prev.todoId)
       );
-      cancelDelete();
-    }
-  }, [deleteConfirmation.todoId, setTodos, cancelDelete]);
+      return {
+        isOpen: false,
+        todoId: null,
+        todoTitle: '',
+      };
+    });
+  }, [setTodos]);
 
   const addTodo = useCallback(
     (title: string) => {
@@ -91,9 +88,14 @@ export const useTodos = () => {
   // обновление (универсальное)
   const updateTodo = useCallback(
     (id: string, title: string) => {
+      const trimmed = title.trim();
+      if (!trimmed) return;
+
       setTodos((prev) =>
         prev.map((todo) =>
-          todo.id === id ? { ...todo, title } : todo
+          todo.id === id
+            ? { ...todo, title: trimmed }
+            : todo
         )
       );
     },

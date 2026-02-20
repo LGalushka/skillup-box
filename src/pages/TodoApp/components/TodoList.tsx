@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { type Filter } from '../TodoApp';
-import type { Todo } from '../hooks/useTodos';
+import type { Todo } from '../types';
 import { TodoItem } from './TodoItem';
 interface TodoListProps {
   todos: Todo[];

@@ -1,15 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import {
-  CheckCircle2,
-  Circle,
-  EditIcon,
-  Plus,
-  Trash2,
-} from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { TodoItem } from './components/TodoItem';
 
-interface Todo {
+export interface Todo {
   id: string;
   title: string;
   completed: boolean;
@@ -17,27 +12,6 @@ interface Todo {
 }
 
 type Filter = 'all' | 'active' | 'completed';
-
-const MY_TODO: Todo[] = [
-  {
-    id: 'h1',
-    title: 'Выучить React',
-    completed: false,
-    createdAt: '18-02-2026',
-  },
-  {
-    id: 'h2',
-    title: 'Не сдаваться. Все получиться!!!',
-    completed: true,
-    createdAt: '18-02-2026',
-  },
-  {
-    id: 'h3',
-    title: 'Реализовать проект полностью',
-    completed: false,
-    createdAt: '18-02-2026',
-  },
-];
 
 interface StatCardProps {
   label: string;
@@ -61,7 +35,19 @@ const StatCard = ({
 );
 
 export const TodoApp = () => {
-  const [todos, setTodos] = useState<Todo[]>(MY_TODO);
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    const saved = localStorage.getItem('todoApp');
+    try {
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('todoApp', JSON.stringify(todos));
+  }, [todos]);
+
   const [newTask, setNewTask] = useState<string>('');
   const [filter, setFilter] = useState<Filter>('all');
   const [editId, setEditId] = useState<string | null>(null);
@@ -78,8 +64,17 @@ export const TodoApp = () => {
     setTodos([...todos, newTodo]);
     setNewTask('');
   };
+
   const deleteTask = (id: string) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    const todoDelete = todos.find((t) => t.id === id);
+    if (todoDelete) {
+      const isConfirmed = window.confirm(
+        `Вы уверены, что хотите удалить задачу "${todoDelete.title}"?`
+      );
+      if (isConfirmed) {
+        setTodos(todos.filter((todo) => todo.id !== id));
+      }
+    }
   };
 
   const toggleTodo = (id: string) => {
@@ -92,7 +87,7 @@ export const TodoApp = () => {
     );
   };
 
-  const updeteTodo = <K extends keyof Todo>(
+  const updateTodo = <K extends keyof Todo>(
     id: string,
     key: K,
     value: Todo[K]
@@ -143,6 +138,8 @@ export const TodoApp = () => {
     };
   }, [todos]);
 
+  console.log(stats);
+
   return (
     <div className="p-lg mx-auto flex max-w-2xl flex-col gap-10">
       {' '}
@@ -161,28 +158,49 @@ export const TodoApp = () => {
         <StatCard label="Всего" value={stats.total} />
         <StatCard
           label="В работе"
-          value={stats.active}
-          colorClass="text-primary"
+          value={`${stats.active} (${stats.percentActive}%)`}
+          colorClass={
+            stats.active === 0
+              ? 'text-text-light'
+              : 'text-primary'
+          }
         />
-        <StatCard label="Готово" value={stats.completed} />
+        <StatCard
+          label="Готово"
+          value={`${stats.completed} (${stats.percentCompleted}%)`}
+          colorClass={
+            stats.completed === 0
+              ? 'text-text-light'
+              : 'text-primary'
+          }
+        />
       </section>
       {/* Поле ввода: УБИРАЕМ лишний фон-карточку, оставляем только Gap */}
       <div className="flex flex-col gap-6">
-        <div className="flex gap-3">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (newTask.trim()) {
+              addTodo();
+            }
+          }}
+          className="flex gap-3"
+        >
           <Input
+            autoFocus
             value={newTask}
             placeholder="Что нужно сделать?..."
             className="border-border-color bg-card/50 focus:border-primary/50 h-12 flex-1 text-base"
             onChange={(e) => setNewTask(e.target.value)}
           />
           <Button
-            onClick={addTodo}
+            type="submit"
             disabled={!newTask.trim()}
             className="shadow-primary/10 h-14 shadow-lg"
           >
             <Plus size={20} className="mr-2" /> Добавить
           </Button>
-        </div>
+        </form>
 
         {/* Фильтры: сделаем их совсем маленькими и аккуратными */}
         <div className="flex items-center gap-2">
@@ -212,82 +230,36 @@ export const TodoApp = () => {
       </div>
       {/* Список задач: добавим разделители или чуть больше отступов */}
       <ul className="flex flex-col gap-3 pb-20">
-        {filteredTodos.map((item) => (
-          <li
-            key={item.id}
-            className="group border-border-color bg-card hover:border-primary/30 flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm"
-          >
-            {editId === item.id ? (
-              <>
-                <Input
-                  type="text"
-                  value={item.title}
-                  onChange={(e) =>
-                    updeteTodo(
-                      item.id,
-                      'title',
-                      e.target.value
-                    )
-                  }
-                />
-                <div className="flex gap-2">
-                  <Button onClick={handleSave}>
-                    Сохранить
-                  </Button>
-                  <Button onClick={() => setEditId(null)}>
-                    Отмена
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => toggleTodo(item.id)}
-                  className="text-primary transition-transform active:scale-90"
-                >
-                  {item.completed ? (
-                    <CheckCircle2
-                      size={22}
-                      className="opacity-100"
-                    />
-                  ) : (
-                    <Circle
-                      size={22}
-                      className="opacity-30"
-                    />
-                  )}
-                </button>
-
-                <span
-                  className={`flex-1 text-sm font-medium transition-all ${
-                    item.completed
-                      ? 'text-text-secondary line-through opacity-40'
-                      : 'text-white'
-                  }`}
-                >
-                  {item.title}
-                </span>
-                <Button
-                  variant="secondary"
-                  onClick={() => deleteTask(item.id)}
-                  className="hover:bg-destructive opacity-0 transition-all group-hover:opacity-100 hover:text-white"
-                >
-                  <Trash2 size={16} />
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => setEditId(item.id)}
-                  className="opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <EditIcon
-                    size={16}
-                    className="stroke-[1.5px]"
-                  />
-                </Button>
-              </>
-            )}
-          </li>
-        ))}
+        {filteredTodos.length === 0 ? (
+          <div className="border-border-color flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-12 opacity-50">
+            <p className="text-sm font-medium">
+              {filter === 'all'
+                ? 'Ваш список дел пуст'
+                : filter === 'active'
+                  ? 'Нет активных задач'
+                  : 'У вас нет завершенных дел'}
+            </p>
+            <span className="text-[10px] tracking-widest uppercase">
+              Отличная работа!!!
+            </span>
+          </div>
+        ) : (
+          filteredTodos.map((item) => (
+            <TodoItem
+              key={item.id}
+              item={item}
+              isEditing={editId === item.id}
+              onToggle={toggleTodo}
+              onDelete={deleteTask}
+              onEdit={setEditId}
+              onUpdate={(id, title) =>
+                updateTodo(id, 'title', title)
+              }
+              onCancel={() => setEditId(null)}
+              onSave={handleSave}
+            />
+          ))
+        )}
       </ul>
     </div>
   );

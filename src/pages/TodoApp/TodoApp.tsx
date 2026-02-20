@@ -5,10 +5,10 @@ import {
   useState,
 } from 'react';
 
-import { TodoItem } from './components/TodoItem';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoStats } from './components/TodoStats';
 import { TodoForm } from './components/TodoForm';
+import { TodoList } from './components/TodoList';
 
 export interface Todo {
   id: string;
@@ -155,38 +155,19 @@ export const TodoApp = () => {
           onFilterChange={handleFilterChange}
         />
         {/* Список задач */}
-        <ul className="flex flex-col gap-3 pb-20">
-          {filteredTodos.length === 0 ? (
-            <div className="border-border-color flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-12 opacity-50">
-              <p className="text-sm font-medium">
-                {filter === 'all'
-                  ? 'Ваш список дел пуст'
-                  : filter === 'active'
-                    ? 'Нет активных задач'
-                    : 'У вас нет завершенных дел'}
-              </p>
-              <span className="text-[10px] tracking-widest uppercase">
-                Отличная работа!!!
-              </span>
-            </div>
-          ) : (
-            filteredTodos.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                item={todo}
-                isEditing={editId === todo.id}
-                onToggle={toggleTodo}
-                onDelete={deleteTask}
-                onEdit={setEditId}
-                onUpdate={(id, title) =>
-                  updateTodo(id, 'title', title)
-                }
-                onCancel={() => setEditId(null)}
-                onSave={handleSave}
-              />
-            ))
-          )}
-        </ul>
+        <TodoList
+          todos={filteredTodos}
+          filter={filter}
+          editId={editId}
+          onToggle={toggleTodo}
+          onDelete={deleteTask}
+          onEdit={setEditId}
+          onUpdate={(id, title) =>
+            updateTodo(id, 'title', title)
+          }
+          onCancel={() => setEditId(null)}
+          onSave={handleSave}
+        />
       </div>
     </div>
   );

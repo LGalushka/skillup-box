@@ -1,125 +1,41 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useMemo, useState } from 'react';
 
 import { TodoFilter } from './components/TodoFilter';
 import { TodoStats } from './components/TodoStats';
 import { TodoForm } from './components/TodoForm';
 import { TodoList } from './components/TodoList';
-import { useLocalStorage } from './hooks';
 
-export interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  createdAt: string;
-}
+import { useTodos } from './hooks/useTodos';
 
 export type Filter = 'all' | 'active' | 'completed';
 
 export const TodoApp = () => {
-  const [todos, setTodos] = useLocalStorage<Todo[]>(
-    'todoApp',
-    []
-  );
+  const {
+    todos,
+    stats,
+    addTodo,
+    deleteTask,
+    toggleTodo,
+    updateTodo,
+  } = useTodos();
 
   const [newTask, setNewTask] = useState<string>('');
   const [filter, setFilter] = useState<Filter>('all');
   const [editId, setEditId] = useState<string | null>(null);
 
-  const addTodo = () => {
-    if (!newTask.trim()) return;
-
-    const newTodo: Todo = {
-      id: Date.now().toString(),
-      title: newTask,
-      completed: false,
-      createdAt: new Date().toISOString().slice(0, 10),
-    };
-    setTodos([...todos, newTodo]);
-    setNewTask('');
-  };
-
-  const deleteTask = useCallback((id: string) => {
-    const todoDelete = todos.find((t) => t.id === id);
-    if (todoDelete) {
-      const isConfirmed = window.confirm(
-        `Вы уверены, что хотите удалить задачу "${todoDelete.title}"?`
-      );
-      if (isConfirmed) {
-        setTodos(todos.filter((todo) => todo.id !== id));
-      }
-    }
-  }, []);
-
-  const toggleTodo = useCallback((id: string) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id
-          ? { ...todo, completed: !todo.completed }
-          : todo
-      )
-    );
-  }, []);
-
-  const updateTodo = <K extends keyof Todo>(
-    id: string,
-    key: K,
-    value: Todo[K]
-  ) => {
-    const update = todos.map((todo) =>
-      todo.id === id ? { ...todo, [key]: value } : todo
-    );
-    setTodos(update);
-  };
-
+  // фильтруем задачи здесь
   const filteredTodos = useMemo(() => {
+    if (!todos) return [];
     switch (filter) {
       case 'active':
-        return todos.filter((item) => !item.completed);
+        return todos.filter((t) => !t.completed);
       case 'completed':
-        return todos.filter((item) => item.completed);
+        return todos.filter((t) => t.completed);
       case 'all':
       default:
         return todos;
     }
   }, [todos, filter]);
-
-  const handleFilterChange = useCallback(
-    (newFilter: Filter) => {
-      setFilter(newFilter);
-    },
-    []
-  );
-
-  const handleSave = () => {
-    setEditId(null);
-  };
-
-  const stats = useMemo(() => {
-    const total = todos.length;
-    const completed = todos.filter(
-      (item) => item.completed
-    ).length;
-    const active = total - completed;
-
-    return {
-      total,
-      completed,
-      active,
-      percentCompleted: total
-        ? Math.round((completed / total) * 100)
-        : 0,
-      percentActive: total
-        ? Math.round((active / total) * 100)
-        : 0,
-    };
-  }, [todos]);
-
-  console.log(stats);
 
   return (
     <div className="p-lg mx-auto flex max-w-2xl flex-col gap-10">
@@ -139,13 +55,16 @@ export const TodoApp = () => {
         <TodoForm
           newTodo={newTask}
           onTodoChange={setNewTask}
-          onAdd={addTodo}
+          onAdd={() => {
+            addTodo(newTask);
+            setNewTask('');
+          }}
         />
 
         {/* Фильтры*/}
         <TodoFilter
           currentFilter={filter}
-          onFilterChange={handleFilterChange}
+          onFilterChange={setFilter}
         />
         {/* Список задач */}
         <TodoList
@@ -155,11 +74,9 @@ export const TodoApp = () => {
           onToggle={toggleTodo}
           onDelete={deleteTask}
           onEdit={setEditId}
-          onUpdate={(id, title) =>
-            updateTodo(id, 'title', title)
-          }
+          onUpdate={updateTodo}
           onCancel={() => setEditId(null)}
-          onSave={handleSave}
+          onSave={() => setEditId(null)}
         />
       </div>
     </div>

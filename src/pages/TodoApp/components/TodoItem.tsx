@@ -53,9 +53,7 @@ export const TodoItem = memo(
             />
             <div className="flex gap-2">
               <Button onClick={onSave}>Сохранить</Button>
-              <Button onClick={() => onCancel}>
-                Отмена
-              </Button>
+              <Button onClick={onCancel}>Отмена</Button>
             </div>
           </>
         ) : (

@@ -3,77 +3,21 @@ import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { HabitHeader } from './components';
 import { CheckCircle, Circle, Flame } from 'lucide-react';
-
-interface Habit {
-  id: string;
-  name: string;
-  completedDates: string[];
-}
+import { useHabits } from './hooks';
 
 export const HabitTracker = () => {
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [newHabit, setNewHabit] = useState<string>('');
+  const { habits, addHabit, toggleHabit, getStreak } =
+    useHabits();
+  const [newHabitName, setNewHabitName] =
+    useState<string>('');
 
-  const addHabit = () => {
-    if (!newHabit.trim()) return;
-    setHabits([
-      ...habits,
-      {
-        id: crypto.randomUUID(),
-        name: newHabit,
-        completedDates: [],
-      },
-    ]);
-    setNewHabit('');
+  const handleAdd = () => {
+    if (!newHabitName.trim()) return;
+    addHabit(newHabitName);
+    setNewHabitName('');
   };
 
-  const toggleHabit = (habitId: string) => {
-    const today = new Date().toISOString().split('T')[0];
-
-    setHabits(
-      habits.map((item) => {
-        if (item.id !== habitId) return item;
-        const hasToday =
-          item.completedDates.includes(today);
-        return {
-          ...item,
-          completedDates: hasToday
-            ? item.completedDates.filter((d) => d !== today)
-            : [...item.completedDates, today],
-        };
-      })
-    );
-  };
-
-  {
-    /** Считаем streak сколько дней подряд */
-  }
-  const getStreak = (dates: string[]): number => {
-    if (dates.length === 0) return 0;
-    const sorted = [...dates].sort().reverse();
-    const today = new Date().toISOString().split('T')[0];
-
-    //если сегодня не отметила - streak  = 0
-    if (!sorted.includes(today)) return 0;
-
-    let streak = 1;
-    let currentDate = new Date(today);
-
-    for (let i = 1; i < sorted.length; i++) {
-      const prevDate = new Date(currentDate);
-      prevDate.setDate(prevDate.getDate() - 1);
-      const prevDateStr = prevDate
-        .toISOString()
-        .split('T')[0];
-      if (sorted.includes(prevDateStr)) {
-        streak++;
-        currentDate = prevDate;
-      } else {
-        break;
-      }
-    }
-    return streak;
-  };
+  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-8">
@@ -82,15 +26,17 @@ export const HabitTracker = () => {
       {/* Форма добавления */}
       <div className="mb-8 flex gap-2">
         <Input
-          value={newHabit}
-          onChange={(e) => setNewHabit(e.target.value)}
-          placeholder="Новая привычка (например: Читать)"
+          value={newHabitName}
+          onChange={(e) => setNewHabitName(e.target.value)}
+          placeholder="Новая привычка..."
           className="flex-1"
-          onKeyDown={(e) => e.key === 'Enter' && addHabit()}
+          onKeyDown={(e) =>
+            e.key === 'Enter' && handleAdd()
+          }
         />
         <Button
-          onClick={addHabit}
-          disabled={!newHabit.trim()}
+          onClick={handleAdd}
+          disabled={!newHabitName.trim()}
         >
           Добавить
         </Button>
@@ -99,9 +45,6 @@ export const HabitTracker = () => {
       {/* Список привычек */}
       <div className="space-y-3">
         {habits.map((habit) => {
-          const today = new Date()
-            .toISOString()
-            .split('T')[0];
           const isDoneToday =
             habit.completedDates.includes(today);
           const streak = getStreak(habit.completedDates);
@@ -115,6 +58,7 @@ export const HabitTracker = () => {
                 {habit.name}
               </span>
 
+              {/*Индикатор стрика */}
               <div className="flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1">
                 <Flame
                   size={16}
@@ -135,12 +79,10 @@ export const HabitTracker = () => {
                   isDoneToday ? 'primary' : 'secondary'
                 }
                 onClick={() => toggleHabit(habit.id)}
-                // Добавляем flex и gap для выравнивания
                 className="min-w-120px flex items-center justify-center gap-2 transition-all"
               >
                 {isDoneToday ? (
                   <>
-                    {/* Используем CheckCircle вместо CheckCircle2 для более жирных линий */}
                     <CheckCircle
                       size={20}
                       fill="currentColor"

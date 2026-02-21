@@ -25,6 +25,13 @@ export const useHabits = () => {
     setHabits((prev) => [...prev, newHabit]);
   };
 
+  // Удаление
+  const deleteHabit = (id: string) => {
+    setHabits((prev) =>
+      prev.filter((habit) => habit.id !== id)
+    );
+  };
+
   //переключение
   const toggleHabit = (habitId: string) => {
     const today = new Date().toISOString().split('T')[0];
@@ -81,5 +88,11 @@ export const useHabits = () => {
     return streak;
   };
 
-  return { habits, addHabit, toggleHabit, getStreak };
+  return {
+    habits,
+    addHabit,
+    deleteHabit,
+    toggleHabit,
+    getStreak,
+  };
 };

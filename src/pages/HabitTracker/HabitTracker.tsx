@@ -2,12 +2,22 @@ import { useState } from 'react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { HabitHeader } from './components';
-import { CheckCircle, Circle, Flame } from 'lucide-react';
+import {
+  CheckCircle,
+  Circle,
+  Flame,
+  Trash2,
+} from 'lucide-react';
 import { useHabits } from './hooks';
 
 export const HabitTracker = () => {
-  const { habits, addHabit, toggleHabit, getStreak } =
-    useHabits();
+  const {
+    habits,
+    addHabit,
+    deleteHabit,
+    toggleHabit,
+    getStreak,
+  } = useHabits();
   const [newHabitName, setNewHabitName] =
     useState<string>('');
 
@@ -105,6 +115,17 @@ export const HabitTracker = () => {
                     </span>
                   </>
                 )}
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  if (confirm('Удалить эту привычку?')) {
+                    deleteHabit(habit.id);
+                  }
+                }}
+                className="text-text-secondary transition-colors hover:text-red-500"
+              >
+                <Trash2 size={20} />
               </Button>
             </div>
           );

@@ -1,1 +1,1 @@
-export { fetchForecast, fetchCurrentWeather } from './weatherApi';
+export { fetchWeatherData } from './weatherApi';

@@ -1,13 +1,13 @@
+import type { WeatherResponse } from '../types/weather';
 import { ENDPOINTS } from './weatherUrl';
 
-export const fetchCurrentWeather = async (city: string) => {
-  const response = await fetch(ENDPOINTS.current(city));
-  if (!response.ok) throw new Error('Город не найден');
-  return response.json();
-};
-
-export const fetchForecast = async (city: string) => {
+export const fetchWeatherData = async (
+  city: string
+): Promise<WeatherResponse> => {
   const response = await fetch(ENDPOINTS.forecact(city));
-  if (!response.ok) throw new Error('Не удалось загрузить прогноз');
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || 'Ошибка загрузки погоды');
+  }
   return response.json();
 };

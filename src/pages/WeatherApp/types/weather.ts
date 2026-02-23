@@ -34,3 +34,11 @@ export interface ForecastDay {
     condition: WeatherCondition;
   };
 }
+
+export interface WeatherResponse {
+  location: WeatherLocation;
+  current: CurrentWeather;
+  forecast: {
+    forecastday: ForecastDay[];
+  };
+}

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { WeatherResponse } from './types/weather';
 import { fetchWeatherData } from './api';
-import { WeatherHeader } from './components';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
+import { WeatherHeader, WeatherSearch } from './components';
 
 export const WeatherApp = () => {
   const [data, setData] = useState<WeatherResponse | null>(null);
@@ -45,22 +43,12 @@ export const WeatherApp = () => {
     <div className="p-lg mx-auto flex max-w-2xl flex-col gap-10">
       <WeatherHeader />
       {/**Секция заголовок с текущей датой */}
-      <form onSubmit={handleSearch} className="mb-6 flex gap-2">
-        <Input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Введите город..."
-          className="bg-card border-card focus:border-primary rounded-lg border px-4 py-2 transition-colors focus:outline-none"
-        />
-        <Button
-          type="submit"
-          className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-all"
-          disabled={!searchQuery.trim()}
-        >
-          Найти
-        </Button>
-      </form>
+      <WeatherSearch
+        search={searchQuery}
+        onSearch={setSearchQuery}
+        onSubmit={handleSearch}
+      />
+
       <section className="bg-card/50 border-card w-115 rounded-xl border p-6">
         <h1 className="text-text-primary mb-2 text-2xl font-bold">
           {data.location.name}, {data.location.country}

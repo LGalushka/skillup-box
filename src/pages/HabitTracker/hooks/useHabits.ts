@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useLocalStorageHabit } from './useLocalStorageHabit';
 
 export interface Habit {
@@ -82,8 +83,22 @@ export const useHabits = () => {
     );
   };
 
+  const today = new Date().toISOString().split('T')[0];
+  //статистика
+  const stats = useMemo(() => {
+    const totalCount = habits.length;
+    const completedCount = habits.filter((h) =>
+      h.completedDates.includes(today)
+    ).length;
+    const progress =
+      totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+    return { totalCount, completedCount, progress };
+  }, [habits, today]);
+
   return {
     habits,
+    stats,
+    today,
     addHabit,
     deleteHabit,
     toggleHabit,

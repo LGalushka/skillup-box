@@ -1,15 +1,19 @@
 import { useState } from 'react';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
-import { HabitHeader, HabitStats } from './components';
-
+import { HabitForm, HabitHeader, HabitStats } from './components';
 import { useHabits } from './hooks';
 import { HabitCard } from './components/HabitCart';
 
 export const HabitTracker = () => {
-  const { habits, addHabit, deleteHabit, toggleHabit, getStreak, renameHabit } =
-    useHabits();
-  const [newHabitName, setNewHabitName] = useState<string>('');
+  const {
+    habits,
+    stats,
+    today,
+    addHabit,
+    deleteHabit,
+    toggleHabit,
+    getStreak,
+    renameHabit,
+  } = useHabits();
 
   const [editingID, setEditingID] = useState<string | null>(null);
 
@@ -17,45 +21,18 @@ export const HabitTracker = () => {
     setEditingID(id);
   };
 
-  const handleAdd = () => {
-    if (!newHabitName.trim()) return;
-    addHabit(newHabitName);
-    setNewHabitName('');
-  };
-
-  const today = new Date().toISOString().split('T')[0];
-
-  //статистика
-  const totalCount = habits.length;
-  const completedCount = habits.filter((h) =>
-    h.completedDates.includes(today)
-  ).length;
-  const progress =
-    totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-8">
       <HabitHeader />
 
       <HabitStats
-        total={totalCount}
-        completed={completedCount}
-        progress={progress}
+        total={stats.totalCount}
+        completed={stats.completedCount}
+        progress={stats.progress}
       />
 
       {/* Форма добавления */}
-      <div className="mb-8 flex gap-2">
-        <Input
-          value={newHabitName}
-          onChange={(e) => setNewHabitName(e.target.value)}
-          placeholder="Новая привычка..."
-          className="flex-1"
-          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-        />
-        <Button onClick={handleAdd} disabled={!newHabitName.trim()}>
-          Добавить
-        </Button>
-      </div>
+      <HabitForm onAdd={addHabit} />
 
       {/* Список привычек */}
       <div className="space-y-3">

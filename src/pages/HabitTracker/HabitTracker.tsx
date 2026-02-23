@@ -2,24 +2,22 @@ import { useState } from 'react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { HabitHeader } from './components';
-import {
-  CheckCircle,
-  Circle,
-  Flame,
-  Trash2,
-} from 'lucide-react';
+import { CheckCircle, Circle, Flame, Pencil, Trash2 } from 'lucide-react';
 import { useHabits } from './hooks';
+import { HabitCard } from './components/HabitCart';
 
 export const HabitTracker = () => {
-  const {
-    habits,
-    addHabit,
-    deleteHabit,
-    toggleHabit,
-    getStreak,
-  } = useHabits();
-  const [newHabitName, setNewHabitName] =
-    useState<string>('');
+  const { habits, addHabit, deleteHabit, toggleHabit, getStreak, renameHabit } =
+    useHabits();
+  const [newHabitName, setNewHabitName] = useState<string>('');
+
+  const [editingID, setEditingID] = useState<string | null>(null);
+  const [tempName, setTempName] = useState<string>('');
+
+  const startEditing = (id: string, currentName: string) => {
+    setEditingID(id);
+    setTempName(currentName);
+  };
 
   const handleAdd = () => {
     if (!newHabitName.trim()) return;
@@ -27,11 +25,59 @@ export const HabitTracker = () => {
     setNewHabitName('');
   };
 
+  const handelSave = (id: string) => {
+    if (!tempName.trim()) {
+      alert('Название не может быть пустым');
+      return;
+    }
+    renameHabit(id, tempName);
+    setEditingID(null);
+  };
+
   const today = new Date().toISOString().split('T')[0];
+
+  //статистика
+  const totalCount = habits.length;
+  const completedCount = habits.filter((h) =>
+    h.completedDates.includes(today)
+  ).length;
+  const progress =
+    totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  const getLast7Days = () => {
+    return [...Array(7)].map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return d.toISOString().split('T')[0];
+    });
+  };
 
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-8">
       <HabitHeader />
+
+      <div className="bg-card border-border-color mb-8 rounded-2xl border p-6">
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="text-text-primary text-xl font-bold">
+              Твой прогресс
+            </h2>
+            <p className="text-text-secondary py-3 text-sm">
+              Выполнено {completedCount} из {totalCount} привычек
+            </p>
+          </div>
+          <span className="text-text-primary text-2xl font-black">
+            {progress}%
+          </span>
+        </div>
+        {/**ПОлоса */}
+        <div className="bg-secondary/30 h-3 w-full overflow-hidden rounded-full">
+          <div
+            className="bg-primary h-full shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.5)] transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      </div>
 
       {/* Форма добавления */}
       <div className="mb-8 flex gap-2">
@@ -40,96 +86,34 @@ export const HabitTracker = () => {
           onChange={(e) => setNewHabitName(e.target.value)}
           placeholder="Новая привычка..."
           className="flex-1"
-          onKeyDown={(e) =>
-            e.key === 'Enter' && handleAdd()
-          }
+          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
         />
-        <Button
-          onClick={handleAdd}
-          disabled={!newHabitName.trim()}
-        >
+        <Button onClick={handleAdd} disabled={!newHabitName.trim()}>
           Добавить
         </Button>
       </div>
 
       {/* Список привычек */}
       <div className="space-y-3">
-        {habits.map((habit) => {
-          const isDoneToday =
-            habit.completedDates.includes(today);
-          const streak = getStreak(habit.completedDates);
-
-          return (
-            <div
-              key={habit.id}
-              className="bg-card border-border-color hover:border-primary/30 flex items-center gap-4 rounded-xl border p-4 transition-colors"
-            >
-              <span className="text-textPrimary flex-1 font-medium">
-                {habit.name}
-              </span>
-
-              {/*Индикатор стрика */}
-              <div className="flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1">
-                <Flame
-                  size={16}
-                  className={`${streak > 0 ? 'animate-pulse text-orange-400' : 'text-textSecondary opacity-40'}`}
-                  fill={
-                    streak > 0 ? 'currentColor' : 'none'
-                  }
-                />
-                <span
-                  className={`text-sm font-semibold ${streak > 0 ? 'text-orange-400' : 'text-textSecondary'}`}
-                >
-                  {streak} {streak === 1 ? 'день' : 'дней'}
-                </span>
-              </div>
-
-              <Button
-                variant={
-                  isDoneToday ? 'primary' : 'secondary'
-                }
-                onClick={() => toggleHabit(habit.id)}
-                className="min-w-120px flex items-center justify-center gap-2 transition-all"
-              >
-                {isDoneToday ? (
-                  <>
-                    <CheckCircle
-                      size={20}
-                      fill="currentColor"
-                      fillOpacity={0.2}
-                    />
-                    <span className="font-medium">
-                      Отменить
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {/* Делаем круг чуть жирнее или используем точку */}
-                    <Circle
-                      size={20}
-                      strokeWidth={3}
-                      className="opacity-50"
-                    />
-                    <span className="font-medium">
-                      Готово
-                    </span>
-                  </>
-                )}
-              </Button>
-              <Button
-                variant="danger"
-                onClick={() => {
-                  if (confirm('Удалить эту привычку?')) {
-                    deleteHabit(habit.id);
-                  }
-                }}
-                className="text-text-secondary transition-colors hover:text-red-500"
-              >
-                <Trash2 size={20} />
-              </Button>
-            </div>
-          );
-        })}
+        {habits.map((item) => (
+          <HabitCard
+            key={item.id}
+            habit={item}
+            isDoneToday={item.completedDates.includes(today)}
+            streak={getStreak(item.completedDates)}
+            editingID={editingID}
+            tempName={tempName}
+            setTempName={setTempName}
+            onToggle={toggleHabit}
+            onDelete={(id) => confirm('Удалить?') && deleteHabit(id)}
+            onStartEdit={startEditing}
+            onSaveEdit={(id, name) => {
+              renameHabit(id, name);
+              setEditingID(null);
+            }}
+            onCancelEdit={() => setEditingID(null)}
+          />
+        ))}
 
         {habits.length === 0 && (
           <p className="text-textSecondary text-center">

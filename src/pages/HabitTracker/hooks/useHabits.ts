@@ -9,10 +9,7 @@ interface Habit {
 }
 
 export const useHabits = () => {
-  const [habits, setHabits] = useLocalStorageHabit<Habit[]>(
-    'habit',
-    []
-  );
+  const [habits, setHabits] = useLocalStorageHabit<Habit[]>('habit', []);
 
   //добавление
   const addHabit = (name: string) => {
@@ -27,9 +24,7 @@ export const useHabits = () => {
 
   // Удаление
   const deleteHabit = (id: string) => {
-    setHabits((prev) =>
-      prev.filter((habit) => habit.id !== id)
-    );
+    setHabits((prev) => prev.filter((habit) => habit.id !== id));
   };
 
   //переключение
@@ -38,14 +33,11 @@ export const useHabits = () => {
     setHabits((prev) =>
       prev.map((habit) => {
         if (habit.id !== habitId) return habit;
-        const hasToday =
-          habit.completedDates.includes(today);
+        const hasToday = habit.completedDates.includes(today);
         return {
           ...habit,
           completedDates: hasToday
-            ? habit.completedDates.filter(
-                (d) => d !== today
-              )
+            ? habit.completedDates.filter((d) => d !== today)
             : [...habit.completedDates, today],
         };
       })
@@ -60,14 +52,8 @@ export const useHabits = () => {
 
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const yesterdayStr = yesterday
-      .toISOString()
-      .split('T')[0];
-    if (
-      !dates.includes(today) &&
-      !dates.includes(yesterdayStr)
-    )
-      return 0;
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    if (!dates.includes(today) && !dates.includes(yesterdayStr)) return 0;
 
     let streak = 0;
 
@@ -88,11 +74,22 @@ export const useHabits = () => {
     return streak;
   };
 
+  //редактирование
+  const renameHabit = (id: string, newName: string) => {
+    if (!newName.trim()) return;
+    setHabits((prev) =>
+      prev.map((habit) =>
+        habit.id === id ? { ...habit, name: newName } : habit
+      )
+    );
+  };
+
   return {
     habits,
     addHabit,
     deleteHabit,
     toggleHabit,
     getStreak,
+    renameHabit,
   };
 };

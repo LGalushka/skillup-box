@@ -1,3 +1,5 @@
+export { HabitReminderBanner } from './HabitReminderBanner';
+
 export { HabitList } from './HabitList';
 
 export { HabitCard } from './HabitCard';

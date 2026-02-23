@@ -115,6 +115,12 @@ export const useHabits = () => {
     });
   }, [habits, last7Days]);
 
+  //уведомление о невыполненных привычках
+  const incompleteHabits = useMemo(
+    () => habits.filter((habit) => !habit.completedDates.includes(today)),
+    [habits, today]
+  );
+
   return {
     habits,
     stats,
@@ -126,5 +132,6 @@ export const useHabits = () => {
     toggleHabit,
     getStreak,
     renameHabit,
+    incompleteHabits,
   };
 };

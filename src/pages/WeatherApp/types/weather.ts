@@ -1,3 +1,4 @@
+//место
 export interface WeatherLocation {
   name: string;
   region: string;
@@ -6,12 +7,14 @@ export interface WeatherLocation {
   lon: number;
 }
 
+//как выглядит погода иконка+текст
 export interface WeatherCondition {
   text: string;
   icon: string;
   code: number;
 }
 
+//сейчас
 export interface CurrentWeather {
   temp_c: number;
   feelslike_c: number;
@@ -21,6 +24,7 @@ export interface CurrentWeather {
   is_day: 0 | 1;
 }
 
+//один день
 export interface ForecastDay {
   date: string;
   day: {

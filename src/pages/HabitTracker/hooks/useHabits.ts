@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import { useLocalStorageHabit } from './useLocalStorageHabit';
 
-useState;
-interface Habit {
+export interface Habit {
   id: string;
   name: string;
   completedDates: string[];

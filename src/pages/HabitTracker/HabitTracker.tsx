@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { HabitHeader } from './components';
-import { CheckCircle, Circle, Flame, Pencil, Trash2 } from 'lucide-react';
+import { HabitHeader, HabitStats } from './components';
+
 import { useHabits } from './hooks';
 import { HabitCard } from './components/HabitCart';
 
@@ -12,26 +12,15 @@ export const HabitTracker = () => {
   const [newHabitName, setNewHabitName] = useState<string>('');
 
   const [editingID, setEditingID] = useState<string | null>(null);
-  const [tempName, setTempName] = useState<string>('');
 
-  const startEditing = (id: string, currentName: string) => {
+  const startEditing = (id: string) => {
     setEditingID(id);
-    setTempName(currentName);
   };
 
   const handleAdd = () => {
     if (!newHabitName.trim()) return;
     addHabit(newHabitName);
     setNewHabitName('');
-  };
-
-  const handelSave = (id: string) => {
-    if (!tempName.trim()) {
-      alert('Название не может быть пустым');
-      return;
-    }
-    renameHabit(id, tempName);
-    setEditingID(null);
   };
 
   const today = new Date().toISOString().split('T')[0];
@@ -44,40 +33,15 @@ export const HabitTracker = () => {
   const progress =
     totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  const getLast7Days = () => {
-    return [...Array(7)].map((_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
-      return d.toISOString().split('T')[0];
-    });
-  };
-
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-8">
       <HabitHeader />
 
-      <div className="bg-card border-border-color mb-8 rounded-2xl border p-6">
-        <div className="flex items-end justify-between">
-          <div>
-            <h2 className="text-text-primary text-xl font-bold">
-              Твой прогресс
-            </h2>
-            <p className="text-text-secondary py-3 text-sm">
-              Выполнено {completedCount} из {totalCount} привычек
-            </p>
-          </div>
-          <span className="text-text-primary text-2xl font-black">
-            {progress}%
-          </span>
-        </div>
-        {/**ПОлоса */}
-        <div className="bg-secondary/30 h-3 w-full overflow-hidden rounded-full">
-          <div
-            className="bg-primary h-full shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.5)] transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-      </div>
+      <HabitStats
+        total={totalCount}
+        completed={completedCount}
+        progress={progress}
+      />
 
       {/* Форма добавления */}
       <div className="mb-8 flex gap-2">
@@ -102,8 +66,6 @@ export const HabitTracker = () => {
             isDoneToday={item.completedDates.includes(today)}
             streak={getStreak(item.completedDates)}
             editingID={editingID}
-            tempName={tempName}
-            setTempName={setTempName}
             onToggle={toggleHabit}
             onDelete={(id) => confirm('Удалить?') && deleteHabit(id)}
             onStartEdit={startEditing}

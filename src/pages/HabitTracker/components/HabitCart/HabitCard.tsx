@@ -1,19 +1,20 @@
 import { CheckCircle, Flame, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '../../../../components/ui/Button';
 import { Input } from '../../../../components/ui/Input';
+import { useEffect, useMemo, useState } from 'react';
+import type { Habit } from '../../hooks/useHabits';
 
 interface HabitCardProps {
-  habit: any;
+  habit: Habit;
   isDoneToday: boolean;
   streak: number;
   editingID: string | null;
-  tempName: string;
+
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onStartEdit: (id: string, name: string) => void;
   onSaveEdit: (id: string, name: string) => void;
   onCancelEdit: () => void;
-  setTempName: (name: string) => void;
 }
 
 export const HabitCard = ({
@@ -21,20 +22,30 @@ export const HabitCard = ({
   isDoneToday,
   streak,
   editingID,
-  tempName,
+
   onToggle,
   onDelete,
   onStartEdit,
   onSaveEdit,
   onCancelEdit,
-  setTempName,
 }: HabitCardProps) => {
+  const [localName, setLocalName] = useState(habit.name);
+
   const today = new Date().toISOString().split('T')[0];
-  const last7Days = [...Array(7)].map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split('T')[0];
-  });
+
+  const last7Days = useMemo(
+    () =>
+      [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d.toISOString().split('T')[0];
+      }),
+    []
+  );
+
+  useEffect(() => {
+    if (editingID === habit.id) setLocalName(habit.name);
+  }, [editingID, habit.id, habit.name]);
 
   return (
     <div className="hover:border-primary/30 group rounded-2xl border border-white/5 bg-[#1e2533] p-5 shadow-lg transition-all">
@@ -44,17 +55,17 @@ export const HabitCard = ({
           {editingID === habit.id ? (
             <div className="flex items-center gap-2">
               <Input
-                value={tempName}
-                onChange={(e) => setTempName(e.target.value)}
+                value={localName}
+                onChange={(e) => setLocalName(e.target.value)}
                 className="h-8 w-48 border-white/10 bg-[#161b26]"
                 autoFocus
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') onSaveEdit(habit.id, tempName);
+                  if (e.key === 'Enter') onSaveEdit(habit.id, localName);
                   if (e.key === 'Escape') onCancelEdit();
                 }}
               />
               <Button
-                onClick={() => onSaveEdit(habit.id, tempName)}
+                onClick={() => onSaveEdit(habit.id, localName)}
                 className="h-8 px-3 text-xs"
               >
                 Ок

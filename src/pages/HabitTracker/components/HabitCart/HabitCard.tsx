@@ -1,7 +1,7 @@
 import { CheckCircle, Flame, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '../../../../components/ui/Button';
 import { Input } from '../../../../components/ui/Input';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Habit } from '../../hooks/useHabits';
 
 interface HabitCardProps {
@@ -9,6 +9,7 @@ interface HabitCardProps {
   isDoneToday: boolean;
   streak: number;
   editingID: string | null;
+  last7Days: string[];
 
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
@@ -22,6 +23,7 @@ export const HabitCard = ({
   isDoneToday,
   streak,
   editingID,
+  last7Days,
 
   onToggle,
   onDelete,
@@ -32,16 +34,6 @@ export const HabitCard = ({
   const [localName, setLocalName] = useState(habit.name);
 
   const today = new Date().toISOString().split('T')[0];
-
-  const last7Days = useMemo(
-    () =>
-      [...Array(7)].map((_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
-        return d.toISOString().split('T')[0];
-      }),
-    []
-  );
 
   useEffect(() => {
     if (editingID === habit.id) setLocalName(habit.name);

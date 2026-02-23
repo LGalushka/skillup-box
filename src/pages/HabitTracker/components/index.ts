@@ -1,3 +1,5 @@
+export { HabitActivityChart } from './HabitActivityChart';
+
 export { HabitForm } from './HabitForm';
 
 export { HabitStats } from './HabitStats';

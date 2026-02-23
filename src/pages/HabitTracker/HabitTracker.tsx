@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { HabitForm, HabitHeader, HabitStats } from './components';
+import {
+  HabitActivityChart,
+  HabitForm,
+  HabitHeader,
+  HabitStats,
+} from './components';
 import { useHabits } from './hooks';
 import { HabitCard } from './components/HabitCart';
 
 export const HabitTracker = () => {
   const {
     habits,
+    last7Days,
     stats,
+    activityData,
     today,
     addHabit,
     deleteHabit,
@@ -31,6 +38,9 @@ export const HabitTracker = () => {
         progress={stats.progress}
       />
 
+      {/**График */}
+      <HabitActivityChart data={activityData} />
+
       {/* Форма добавления */}
       <HabitForm onAdd={addHabit} />
 
@@ -40,6 +50,7 @@ export const HabitTracker = () => {
           <HabitCard
             key={item.id}
             habit={item}
+            last7Days={last7Days}
             isDoneToday={item.completedDates.includes(today)}
             streak={getStreak(item.completedDates)}
             editingID={editingID}

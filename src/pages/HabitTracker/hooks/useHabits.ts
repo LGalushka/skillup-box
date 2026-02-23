@@ -28,7 +28,6 @@ export const useHabits = () => {
 
   //переключение
   const toggleHabit = (habitId: string) => {
-    const today = new Date().toISOString().split('T')[0];
     setHabits((prev) =>
       prev.map((habit) => {
         if (habit.id !== habitId) return habit;
@@ -83,7 +82,7 @@ export const useHabits = () => {
     );
   };
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
   //статистика
   const stats = useMemo(() => {
     const totalCount = habits.length;
@@ -95,9 +94,32 @@ export const useHabits = () => {
     return { totalCount, completedCount, progress };
   }, [habits, today]);
 
+  //массив дат за последние 7 дней
+  const last7Days = useMemo(() => {
+    return [...Array(7)].map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return d.toISOString().split('T')[0];
+    });
+  }, []);
+  //Считаем активность для графика
+  const activityData = useMemo(() => {
+    return [...last7Days].map((date) => {
+      const count = habits.filter((h) =>
+        h.completedDates.includes(date)
+      ).length;
+      const dayName = new Date(date).toLocaleDateString('ru-RU', {
+        weekday: 'short',
+      });
+      return { day: dayName, count, date };
+    });
+  }, [habits, last7Days]);
+
   return {
     habits,
     stats,
+    activityData,
+    last7Days,
     today,
     addHabit,
     deleteHabit,

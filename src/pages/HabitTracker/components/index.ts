@@ -1,3 +1,7 @@
+export { HabitList } from './HabitList';
+
+export { HabitCard } from './HabitCard';
+
 export { HabitActivityChart } from './HabitActivityChart';
 
 export { HabitForm } from './HabitForm';

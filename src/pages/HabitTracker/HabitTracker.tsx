@@ -3,10 +3,10 @@ import {
   HabitActivityChart,
   HabitForm,
   HabitHeader,
+  HabitList,
   HabitStats,
 } from './components';
 import { useHabits } from './hooks';
-import { HabitCard } from './components/HabitCart';
 
 export const HabitTracker = () => {
   const {
@@ -45,32 +45,21 @@ export const HabitTracker = () => {
       <HabitForm onAdd={addHabit} />
 
       {/* Список привычек */}
-      <div className="space-y-3">
-        {habits.map((item) => (
-          <HabitCard
-            key={item.id}
-            habit={item}
-            last7Days={last7Days}
-            isDoneToday={item.completedDates.includes(today)}
-            streak={getStreak(item.completedDates)}
-            editingID={editingID}
-            onToggle={toggleHabit}
-            onDelete={(id) => confirm('Удалить?') && deleteHabit(id)}
-            onStartEdit={startEditing}
-            onSaveEdit={(id, name) => {
-              renameHabit(id, name);
-              setEditingID(null);
-            }}
-            onCancelEdit={() => setEditingID(null)}
-          />
-        ))}
-
-        {habits.length === 0 && (
-          <p className="text-textSecondary text-center">
-            Добавь первую привычку! ✨
-          </p>
-        )}
-      </div>
+      <HabitList
+        habits={habits}
+        last7Days={last7Days}
+        today={today}
+        editingID={editingID}
+        onToggle={toggleHabit}
+        onDelete={deleteHabit}
+        onStartEdit={startEditing}
+        onSaveEdit={(id, name) => {
+          renameHabit(id, name);
+          setEditingID(null);
+        }}
+        onCancelEdit={() => setEditingID(null)}
+        getStreak={getStreak}
+      />
     </div>
   );
 };

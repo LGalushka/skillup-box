@@ -1,18 +1,23 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { WeatherResponse } from './types/weather';
 import { fetchWeatherData } from './api';
+import { WeatherHeader } from './components';
+import { Input } from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
 
 export const WeatherApp = () => {
   const [data, setData] = useState<WeatherResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [city, setCity] = useState<string>('Krasnodon');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true);
         setError(null);
-        const result = await fetchWeatherData('Krasnodon');
+        const result = await fetchWeatherData(city);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки');
@@ -21,7 +26,15 @@ export const WeatherApp = () => {
       }
     };
     load();
-  }, []);
+  }, [city]);
+
+  const handleSearch = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setCity(searchQuery);
+      setSearchQuery('');
+    }
+  };
 
   if (loading)
     return <div className="text-text-secondary p-4">Загрузка прогноза...</div>;
@@ -29,8 +42,25 @@ export const WeatherApp = () => {
   if (!data) return null;
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4 text-center">
+    <div className="p-lg mx-auto flex max-w-2xl flex-col gap-10">
+      <WeatherHeader />
       {/**Секция заголовок с текущей датой */}
+      <form onSubmit={handleSearch} className="mb-6 flex gap-2">
+        <Input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Введите город..."
+          className="bg-card border-card focus:border-primary rounded-lg border px-4 py-2 transition-colors focus:outline-none"
+        />
+        <Button
+          type="submit"
+          className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 transition-all"
+          disabled={!searchQuery.trim()}
+        >
+          Найти
+        </Button>
+      </form>
       <section className="bg-card/50 border-card w-115 rounded-xl border p-6">
         <h1 className="text-text-primary mb-2 text-2xl font-bold">
           {data.location.name}, {data.location.country}

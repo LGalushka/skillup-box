@@ -10,12 +10,7 @@ interface TodoConfirmModalProps {
 }
 
 export const TodoConfirmModal = memo(
-  ({
-    isOpen,
-    title,
-    onConfirm,
-    onCancel,
-  }: TodoConfirmModalProps) => {
+  ({ isOpen, title, onConfirm, onCancel }: TodoConfirmModalProps) => {
     // Если модалка закрыта, ничего не рендерим
     if (!isOpen) return null;
 

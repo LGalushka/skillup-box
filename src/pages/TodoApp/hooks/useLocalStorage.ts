@@ -17,10 +17,7 @@ export function useLocalStorage<T>(
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(
-        key,
-        JSON.stringify(storedValue)
-      );
+      window.localStorage.setItem(key, JSON.stringify(storedValue));
     } catch (error) {
       console.error(error);
     }

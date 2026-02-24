@@ -16,7 +16,7 @@ export const HabitReminderBanner = ({
       <div className="flex items-center gap-3">
         <Clock size={24} className="text-primary" />
         <span className="text-text-secondary font-medium">
-          У вас {count} невыполненных превычек сегодня!
+          Невыполненных привычек сегодня: {count}
         </span>
       </div>
       <Button

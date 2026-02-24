@@ -5,34 +5,27 @@ import { useLocalStorage } from './useLocalStorage';
 import type { Todo } from '../types';
 
 export const useTodos = () => {
-  const [todos, setTodos] = useLocalStorage<Todo[]>(
-    'todoApp',
-    []
-  );
+  const [todos, setTodos] = useLocalStorage<Todo[]>('todoApp', []);
 
   //состояние для модалки удаления внутри хука
-  const [deleteConfirmation, setDeleteConfirmation] =
-    useState<{
-      isOpen: boolean;
-      todoId: string | null;
-      todoTitle: string;
-    }>({
-      isOpen: false,
-      todoId: null,
-      todoTitle: '',
-    });
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    todoId: string | null;
+    todoTitle: string;
+  }>({
+    isOpen: false,
+    todoId: null,
+    todoTitle: '',
+  });
 
   // функция которую вызовет кнопка удалить
-  const requestDelete = useCallback(
-    (id: string, title: string) => {
-      setDeleteConfirmation({
-        isOpen: true,
-        todoId: id,
-        todoTitle: title,
-      });
-    },
-    []
-  );
+  const requestDelete = useCallback((id: string, title: string) => {
+    setDeleteConfirmation({
+      isOpen: true,
+      todoId: id,
+      todoTitle: title,
+    });
+  }, []);
 
   const cancelDelete = useCallback(() => {
     setDeleteConfirmation({
@@ -46,9 +39,7 @@ export const useTodos = () => {
   const confirmDelete = useCallback(() => {
     setDeleteConfirmation((prev) => {
       if (!prev.todoId) return prev;
-      setTodos((current) =>
-        current.filter((t) => t.id !== prev.todoId)
-      );
+      setTodos((current) => current.filter((t) => t.id !== prev.todoId));
       return {
         isOpen: false,
         todoId: null,
@@ -76,9 +67,7 @@ export const useTodos = () => {
     (id: string) => {
       setTodos((prev) =>
         prev.map((todo) =>
-          todo.id === id
-            ? { ...todo, completed: !todo.completed }
-            : todo
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
         )
       );
     },
@@ -93,9 +82,7 @@ export const useTodos = () => {
 
       setTodos((prev) =>
         prev.map((todo) =>
-          todo.id === id
-            ? { ...todo, title: trimmed }
-            : todo
+          todo.id === id ? { ...todo, title: trimmed } : todo
         )
       );
     },
@@ -105,21 +92,15 @@ export const useTodos = () => {
   // статистика (вычисляется только при изменении todos)
   const stats = useMemo(() => {
     const total = todos.length;
-    const completed = todos.filter(
-      (t) => t.completed
-    ).length;
+    const completed = todos.filter((t) => t.completed).length;
     const active = total - completed;
 
     return {
       total,
       completed,
       active,
-      percentCompleted: total
-        ? Math.round((completed / total) * 100)
-        : 0,
-      percentActive: total
-        ? Math.round((active / total) * 100)
-        : 0,
+      percentCompleted: total ? Math.round((completed / total) * 100) : 0,
+      percentActive: total ? Math.round((active / total) * 100) : 0,
     };
   }, [todos]);
 

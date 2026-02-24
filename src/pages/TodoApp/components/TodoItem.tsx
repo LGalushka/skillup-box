@@ -1,9 +1,4 @@
-import {
-  CheckCircle2,
-  Circle,
-  EditIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { CheckCircle2, Circle, EditIcon, Trash2Icon } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import type { Todo } from '../types';
@@ -43,9 +38,7 @@ export const TodoItem = memo(
             <Input
               type="text"
               value={item.title}
-              onChange={(e) =>
-                onUpdate(item.id, e.target.value)
-              }
+              onChange={(e) => onUpdate(item.id, e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') onSave();
                 if (e.key === 'Escape') onCancel();
@@ -63,10 +56,7 @@ export const TodoItem = memo(
               className="text-primary transition-transform active:scale-90"
             >
               {item.completed ? (
-                <CheckCircle2
-                  size={22}
-                  className="opacity-100"
-                />
+                <CheckCircle2 size={22} className="opacity-100" />
               ) : (
                 <Circle size={22} className="opacity-30" />
               )}
@@ -86,10 +76,7 @@ export const TodoItem = memo(
               onClick={() => onEdit(item.id)}
               className="opacity-0 transition-opacity group-hover:opacity-100"
             >
-              <EditIcon
-                size={16}
-                className="stroke-[1.5px]"
-              />
+              <EditIcon size={16} className="stroke-[1.5px]" />
             </Button>
             <Button
               variant="secondary"

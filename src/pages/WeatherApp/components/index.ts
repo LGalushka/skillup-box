@@ -1,6 +1,8 @@
+export { WeatherErrorAnimate } from './WeatherErrorAnimate';
+
 export { WeatherContent } from './WeatherContent';
 
-export { WeaherWelcomeScreen } from './WetherWelcomeScreen';
+export { WeatherWelcomeScreen } from './WetherWelcomeScreen';
 
 export { WeatherSearch } from './WeatherSearch';
 

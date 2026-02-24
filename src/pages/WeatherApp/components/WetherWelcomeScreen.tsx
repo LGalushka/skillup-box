@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Moon, Sun, Sunrise, Sunset } from 'lucide-react';
 
-export const WeaherWelcomeScreen = () => {
+export const WeatherWelcomeScreen = () => {
   const hour = new Date().getHours();
 
   //логика динамического приветвия и иконок
@@ -45,7 +45,7 @@ export const WeaherWelcomeScreen = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-card/20 border-card/50 mt-10 flex flex-col items-center justify-center rounded-3xl border p-10 text-center backdrop-blur-md"
+      className="bg-card/20 border-card/50 flex flex-col items-center justify-center rounded-3xl border p-10 text-center backdrop-blur-md"
     >
       <motion.div
         animate={{ y: [0, -10, 0] }}
@@ -54,13 +54,21 @@ export const WeaherWelcomeScreen = () => {
       >
         {icon}
       </motion.div>
-      <div className="text-text-primary mb-2 text-3xl font-bold">
-        <h2>
-          {text}, сегодня {dateFull},
+
+      <div className="flex flex-col items-center gap-2">
+        <h2 className="text-text-primary text-xl font-medium opacity-90">
+          {text}
         </h2>
-        <span>сейчас {currentTime}</span>
+        <div className="flex flex-col items-center">
+          <p className="text-text-primary text-4xl font-extrabold tracking-tight">
+            {currentTime}
+          </p>
+          <p className="text-text-secondary mt-2 text-sm font-medium tracking-wider uppercase">
+            {dateFull}
+          </p>
+        </div>
       </div>
-      <p className="text-text-secondary max-w-280px">
+      <p className="text-text-primary max-w-300px mt-4 text-2xl opacity-80">
         Введите название города в поиске выше, чтобы увидеть прогноз погоды
       </p>
     </motion.div>

@@ -2,12 +2,22 @@ import type { WeatherResponse } from '../types/weather';
 import { ENDPOINTS } from './weatherUrl';
 
 export const fetchWeatherData = async (
-  city: string
+  city: string,
+  days: number = 3,
+  options: RequestInit = {}
 ): Promise<WeatherResponse> => {
-  const response = await fetch(ENDPOINTS.forecact(city));
+  const url = ENDPOINTS.forecast(city, days);
+
+  const response = await fetch(url, options);
+
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error?.message || 'Ошибка загрузки погоды');
+    let errorMessage = 'Ошибка загрузки погоды';
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error?.message || errorMessage;
+    } catch {}
+    throw new Error(errorMessage);
   }
+
   return response.json();
 };

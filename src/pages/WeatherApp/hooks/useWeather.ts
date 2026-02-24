@@ -18,34 +18,55 @@ export const useWeather = (): UseWeatherReturn => {
   useEffect(() => {
     if (!city) {
       setData(null);
+      setLoading(false);
+      setError(null);
       return;
     }
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    let isCurrentRequest = true;
+
     const load = async () => {
       try {
         setLoading(true);
         setError(null);
-        setData(null);
-        const result = await fetchWeatherData(city);
-        setData(result);
-      } catch (err) {
-        const errorMessage =
+
+        const result = await fetchWeatherData(city, undefined, { signal });
+        if (isCurrentRequest && !signal.aborted) {
+          setData(result);
+        }
+      } catch (err: any) {
+        if (err.name === 'AbortError' || signal.aborted) {
+          return;
+        }
+        const message =
           err instanceof Error &&
           err.message.includes('No matching location found')
-            ? 'Упс! Город не найден. Проверьте название.'
-            : 'Произошла ошибка при загрузке данных.';
-        setError(errorMessage);
+            ? 'Город не найден. Проверьте написание.'
+            : err.message || 'Не удалось загрузить погоду';
+
+        if (isCurrentRequest && !signal.aborted) {
+          setError(message);
+        }
       } finally {
-        setLoading(false);
+        if (isCurrentRequest && !signal.aborted) {
+          setLoading(false);
+        }
       }
     };
     load();
+
+    return () => {
+      isCurrentRequest = false;
+      abortController.abort();
+    };
   }, [city]);
 
   useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(null), 4000);
-      return () => clearTimeout(timer);
-    }
+    if (error) return;
+    const timer = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(timer);
   }, [error]);
 
   return { data, loading, error, setCity };

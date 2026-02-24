@@ -5,7 +5,7 @@ export const WeaherWelcomeScreen = () => {
   const hour = new Date().getHours();
 
   //логика динамического приветвия и иконок
-  const getGreeteng = () => {
+  const getGreeting = () => {
     if (hour >= 5 && hour < 12)
       return {
         text: 'Доброе утро',
@@ -27,11 +27,17 @@ export const WeaherWelcomeScreen = () => {
     };
   };
 
-  const { text, icon } = getGreeteng();
+  const { text, icon } = getGreeting();
 
   const currentTime = new Date().toLocaleTimeString('ru-RU', {
     hour: '2-digit',
     minute: '2-digit',
+  });
+
+  const dateFull = new Date().toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 
   return (
@@ -48,9 +54,12 @@ export const WeaherWelcomeScreen = () => {
       >
         {icon}
       </motion.div>
-      <h2 className="text-text-primary mb-2 text-3xl font-bold">
-        {text}, сейчас {currentTime}
-      </h2>
+      <div className="text-text-primary mb-2 text-3xl font-bold">
+        <h2>
+          {text}, сегодня {dateFull},
+        </h2>
+        <span>сейчас {currentTime}</span>
+      </div>
       <p className="text-text-secondary max-w-280px">
         Введите название города в поиске выше, чтобы увидеть прогноз погоды
       </p>

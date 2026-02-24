@@ -16,16 +16,12 @@ export const Sidebar = () => {
   const location = useLocation();
 
   // Функция для проверки активного пункта
-  const isActive = (path: string) =>
-    location.pathname === path;
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <aside className="bg-card border-border-color p-lg gap-xl sticky top-0 flex h-screen w-72 flex-col border-r shadow-md">
       {/**Логотип как большая кнопка-ссылка на главную */}
-      <div
-        className="px-xs group cursor-pointer"
-        onClick={() => navigate('/')}
-      >
+      <div className="px-xs group cursor-pointer" onClick={() => navigate('/')}>
         <h1 className="text-primary group-hover:text-primary/80 text-2xl font-black tracking-tighter uppercase italic transition-colors">
           SkillUp Box
         </h1>
@@ -39,10 +35,7 @@ export const Sidebar = () => {
         <span className="text-text-secondary px-xs text-[10px] font-bold tracking-widest uppercase">
           Поиск
         </span>
-        <Input
-          placeholder="🔍 Найти практику..."
-          className="h-10 text-sm"
-        />
+        <Input placeholder="🔍 Найти практику..." className="h-10 text-sm" />
       </div>
 
       {/**Навигация (мои кнопки) */}
@@ -53,37 +46,25 @@ export const Sidebar = () => {
             Утилиты
           </h3>
           <Button
-            variant={
-              isActive('/todo') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/todo') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/todo')}
           >
-            <ListTodo
-              size={20}
-              className="stroke-[1.5px]"
-            />
+            <ListTodo size={20} className="stroke-[1.5px]" />
             <span>Todo App</span>
           </Button>
 
           <Button
-            variant={
-              isActive('/habit') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/habit') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/habit')}
           >
-            <CalendarCheck
-              size={20}
-              className="stroke-[1.5px]"
-            />
+            <CalendarCheck size={20} className="stroke-[1.5px]" />
             <span>Habit Tracker</span>
           </Button>
 
           <Button
-            variant={
-              isActive('/weather') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/weather') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/weather')}
           >
@@ -92,23 +73,16 @@ export const Sidebar = () => {
           </Button>
 
           <Button
-            variant={
-              isActive('/movies') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/movies') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/movies')}
           >
-            <Clapperboard
-              size={20}
-              className="stroke-[1.5px]"
-            />
+            <Clapperboard size={20} className="stroke-[1.5px]" />
             <span>Movie Search</span>
           </Button>
 
           <Button
-            variant={
-              isActive('/crypto') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/crypto') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/crypto')}
           >
@@ -123,22 +97,15 @@ export const Sidebar = () => {
             Игры
           </h3>
           <Button
-            variant={
-              isActive('/tictac') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/tictac') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/tictac')}
           >
-            <Grid3X3Icon
-              size={20}
-              className="stroke-[1.5px]"
-            />
+            <Grid3X3Icon size={20} className="stroke-[1.5px]" />
             <span>Tic Tac Toe</span>
           </Button>
           <Button
-            variant={
-              isActive('/guess') ? 'primary' : 'secondary'
-            }
+            variant={isActive('/guess') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
             onClick={() => navigate('/guess')}
           >

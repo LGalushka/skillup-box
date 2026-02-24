@@ -14,8 +14,7 @@ export const MainLayout = () => {
 
         {/**Основной контент сраница */}
         <main className="p-lg mx-auto w-full max-w-7xl flex-1">
-          <Outlet />{' '}
-          {/* Здесь будут открываться страницы */}
+          <Outlet /> {/* Здесь будут открываться страницы */}
         </main>
 
         {/**footer */}

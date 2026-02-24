@@ -8,11 +8,7 @@ interface TodoFilterProps {
 
 export const TodoFilter = memo(
   ({ currentFilter, onFilterChange }: TodoFilterProps) => {
-    const filters: Filter[] = [
-      'all',
-      'active',
-      'completed',
-    ];
+    const filters: Filter[] = ['all', 'active', 'completed'];
     return (
       <div className="flex items-center gap-2">
         <span className="text-text-secondary mr-2 text-[10px] font-bold tracking-widest uppercase">
@@ -28,11 +24,7 @@ export const TodoFilter = memo(
                 : 'border-border-color text-text-secondary hover:border-primary/50'
             }`}
           >
-            {f === 'all'
-              ? 'Все'
-              : f === 'active'
-                ? 'Активные'
-                : 'Завершенные'}
+            {f === 'all' ? 'Все' : f === 'active' ? 'Активные' : 'Завершенные'}
           </button>
         ))}
       </div>

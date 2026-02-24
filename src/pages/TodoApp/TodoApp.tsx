@@ -59,10 +59,7 @@ export const TodoApp = () => {
         />
 
         {/* Фильтры*/}
-        <TodoFilter
-          currentFilter={filter}
-          onFilterChange={setFilter}
-        />
+        <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
         {/* Список задач */}
         <TodoList
           todos={filteredTodos}

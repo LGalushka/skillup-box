@@ -29,6 +29,7 @@ export const WeatherApp = () => {
         search={searchQuery}
         onSearch={setSearchQuery}
         onSubmit={handleSearch}
+        isLoading={loading}
       />
       <WeatherErrorAnimate error={error} />
 

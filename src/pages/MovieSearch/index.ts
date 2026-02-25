@@ -1,1 +1,1 @@
-export { MovieSearch } from './MovieSearch';
+export { MovieSearch } from './components/MovieSearch/MovieSearch';

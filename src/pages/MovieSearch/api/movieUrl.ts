@@ -8,10 +8,8 @@ export const BASE_URL = 'https://www.omdbapi.com';
 
 export const ENDPOINTS = {
   search: (query: string, page: number = 1) =>
-    `${BASE_URL}/?
-  s=${encodeURIComponent(query)}&page=${page}&apikey=${MOVIE_API_KEY}`,
+    `${BASE_URL}?&apikey=${MOVIE_API_KEY}&s=${encodeURIComponent(query)}&page=${page}`,
 
   details: (imdbID: string) =>
-    `${BASE_URL}/?
-  i=${imdbID}&plot=full&apikey=${MOVIE_API_KEY}`,
+    `${BASE_URL}?i=${imdbID}&plot=full&apikey=${MOVIE_API_KEY}`,
 };

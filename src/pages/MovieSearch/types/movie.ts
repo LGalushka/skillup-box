@@ -3,7 +3,7 @@ interface OmdbBaseResponse {
   Error?: string;
 }
 
-export interface OmdbMovieBase extends OmdbBaseResponse {
+export interface OmdbMovieBase {
   Title: string;
   Year: string;
   imdbID: string;
@@ -12,13 +12,13 @@ export interface OmdbMovieBase extends OmdbBaseResponse {
 }
 
 //результаты поиска
-export interface OmdbSearchResponse extends OmdbMovieBase {
+export interface OmdbSearchResponse extends OmdbBaseResponse {
   Search: OmdbMovieBase[];
-  totalResults: string;
+  totalResults?: string;
 }
 
 //детали для одного фильма
-export interface OmdbMovieDetails extends OmdbMovieBase {
+export interface OmdbMovieDetails extends OmdbMovieBase, OmdbBaseResponse {
   Rated: string;
   Released: string;
   Runtime: string;
@@ -49,5 +49,5 @@ export interface Movie {
   rating?: string;
   plot?: string;
   genres?: string[];
-  tuntime?: string;
+  runtime?: string;
 }

@@ -5,10 +5,8 @@ import { Input } from '../../../../components/ui/Input';
 export const MovieSearch = () => {
   const [query, setQuery] = useState('inception');
 
-  // Вот здесь главное исправление ↓
   const debouncedQuery = useDebounce(query.trim(), 400);
 
-  // Передаём debouncedQuery, а не query!
   const { data, loading, error } = useMovieSearch(debouncedQuery);
 
   return (

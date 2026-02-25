@@ -8,6 +8,7 @@ import { MovieSearch } from './pages/MovieSearch';
 import { CryptoTrack } from './pages/CryptoTrack';
 import { TicTacToe } from './pages/TicTacToe';
 import { GuessNumber } from './pages/GuessNumber';
+import { MovieDetails } from './pages/MovieSearch/components/MovieDetails';
 
 function App() {
   return (
@@ -18,7 +19,11 @@ function App() {
           <Route path="todo" element={<TodoApp />} />
           <Route path="habit" element={<HabitTracker />} />
           <Route path="weather" element={<WeatherApp />} />
-          <Route path="movies" element={<MovieSearch />} />
+          <Route path="movies">
+            <Route index element={<MovieSearch />} />
+            <Route path=":imdbID" element={<MovieDetails />} />
+          </Route>
+
           <Route path="crypto" element={<CryptoTrack />} />
           <Route path="tictac" element={<TicTacToe />} />
           <Route path="guess" element={<GuessNumber />} />

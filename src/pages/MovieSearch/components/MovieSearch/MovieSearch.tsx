@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { useDebounce, useMovieSearch } from '../../hooks';
-import { MovieSearchBar } from '../MovieSearchBar';
-import { MovieHeader } from '../MovieHeader';
 import type { OmdbMovieBase } from '../../types';
-import { MovieFavorites } from '../MovieFavorites';
 import { useLocalStorageMovie } from '../../hooks/useLocalStorageMovies';
-import { MovieGrid } from '../MovieGrid';
-import { MovieCardSkeleton } from '../MovieCardSkeleton';
-import { FilterGroup, type SearchType } from '../FilterGroup/FilterGroup';
+
+import {
+  MovieSearchBar,
+  MovieHeader,
+  MovieFavorites,
+  MovieGrid,
+  MovieCardSkeleton,
+  FilterGroup,
+  type SearchType,
+} from '../index';
 
 export const MovieSearch = () => {
   const [query, setQuery] = useState<string>('inception');

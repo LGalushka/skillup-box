@@ -6,10 +6,15 @@ import { MovieHeader } from '../MovieHeader';
 import type { OmdbMovieBase } from '../../types';
 import { MovieCard } from '../MovieCard/MovieCard';
 import { MovieFavorites } from '../MovieFavorites';
+import { useLocalStorageMovie } from '../../hooks/useLocalStorageMovies';
 
 export const MovieSearch = () => {
   const [query, setQuery] = useState<string>('inception');
-  const [favorites, setFavorites] = useState<OmdbMovieBase[]>([]);
+
+  const [favorites, setFavorites] = useLocalStorageMovie<OmdbMovieBase[]>(
+    'movie-favorites',
+    []
+  );
 
   const debouncedQuery = useDebounce(query.trim(), 400);
 

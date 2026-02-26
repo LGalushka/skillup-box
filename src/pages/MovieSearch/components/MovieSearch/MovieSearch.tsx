@@ -6,6 +6,7 @@ import type { OmdbMovieBase } from '../../types';
 import { MovieFavorites } from '../MovieFavorites';
 import { useLocalStorageMovie } from '../../hooks/useLocalStorageMovies';
 import { MovieGrid } from '../MovieGrid';
+import { MovieCardSkeleton } from '../MovieCardSkeleton';
 
 export const MovieSearch = () => {
   const [query, setQuery] = useState<string>('inception');
@@ -36,7 +37,15 @@ export const MovieSearch = () => {
 
       <div className="flex items-center gap-6">
         <div className="min-w-0 flex-1">
-          {loading && <p className="mt-4 text-gray-400">Загружаем...</p>}
+          {loading && (
+            <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <li key={i}>
+                  <MovieCardSkeleton />
+                </li>
+              ))}
+            </ul>
+          )}
           {error && <p className="mt-4 text-red-500">Ошибка: {error}</p>}
           {!loading && !error && data?.Response === 'False' && (
             <p className="mt-4 text-yellow-500">

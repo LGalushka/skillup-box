@@ -42,7 +42,7 @@ export function useAsyncResource<T>(
       ignore = true;
       controller.abort();
     };
-  }, [...deps, enabled]);
+  }, [enabled, ...deps]);
 
   return { data, loading, error };
 }

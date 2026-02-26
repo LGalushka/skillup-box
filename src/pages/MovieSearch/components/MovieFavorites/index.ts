@@ -1,0 +1,1 @@
+export { MovieFavorites } from './MovieFavorites';

@@ -1,23 +1,20 @@
 import { useState } from 'react';
 import { useDebounce, useMovieSearch } from '../../hooks';
-
 import { MovieSearchBar } from '../MovieSearchBar';
 import { MovieHeader } from '../MovieHeader';
 import type { OmdbMovieBase } from '../../types';
-import { MovieCard } from '../MovieCard/MovieCard';
 import { MovieFavorites } from '../MovieFavorites';
 import { useLocalStorageMovie } from '../../hooks/useLocalStorageMovies';
+import { MovieGrid } from '../MovieGrid';
 
 export const MovieSearch = () => {
   const [query, setQuery] = useState<string>('inception');
-
   const [favorites, setFavorites] = useLocalStorageMovie<OmdbMovieBase[]>(
     'movie-favorites',
     []
   );
 
   const debouncedQuery = useDebounce(query.trim(), 400);
-
   const { data, loading, error } = useMovieSearch(debouncedQuery);
 
   function toggleFovorite(movie: OmdbMovieBase) {
@@ -28,28 +25,19 @@ export const MovieSearch = () => {
     );
   }
 
+  function removeFavorite(id: string) {
+    setFavorites((prev) => prev.filter((f) => f.imdbID !== id));
+  }
+
   return (
     <div className="m-6 flex flex-col">
       <MovieHeader />
-
-      {/**Поиск */}
       <MovieSearchBar value={query} onChange={setQuery} />
 
-      {/**Контент */}
       <div className="flex items-center gap-6">
-        {/**Основная область */}
-
         <div className="min-w-0 flex-1">
           {loading && <p className="mt-4 text-gray-400">Загружаем...</p>}
-
-          {error && (
-            <p className="mt-4 text-red-500">
-              Ошибка: {error}
-              {error.includes('Incorrect IMDb ID') &&
-                ' (возможно, ошибка в вызове деталей фильма)'}
-            </p>
-          )}
-
+          {error && <p className="mt-4 text-red-500">Ошибка: {error}</p>}
           {!loading && !error && data?.Response === 'False' && (
             <p className="mt-4 text-yellow-500">
               Ничего не найдено по запросу "{debouncedQuery}"
@@ -57,28 +45,15 @@ export const MovieSearch = () => {
           )}
 
           {data?.Search?.length ? (
-            <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
-              {data.Search.map((movie) => (
-                <li key={movie.imdbID} className="h-full">
-                  <MovieCard
-                    movie={movie}
-                    isFavorite={favorites.some(
-                      (f) => f.imdbID === movie.imdbID
-                    )}
-                    onToggleFavorite={toggleFovorite}
-                  />
-                </li>
-              ))}
-            </ul>
+            <MovieGrid
+              movies={data.Search}
+              favorites={favorites}
+              onToggleFavorite={toggleFovorite}
+            />
           ) : null}
         </div>
         {/**Садебар для избранного */}
-        <MovieFavorites
-          favorites={favorites}
-          onRemove={(id) =>
-            setFavorites((prev) => prev.filter((f) => f.imdbID !== id))
-          }
-        />
+        <MovieFavorites favorites={favorites} onRemove={removeFavorite} />
       </div>
     </div>
   );

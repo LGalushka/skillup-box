@@ -8,7 +8,7 @@ import { MovieCard } from '../MovieCard/MovieCard';
 import { MovieFavorites } from '../MovieFavorites';
 
 export const MovieSearch = () => {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<string>('inception');
   const [favorites, setFavorites] = useState<OmdbMovieBase[]>([]);
 
   const debouncedQuery = useDebounce(query.trim(), 400);
@@ -34,7 +34,7 @@ export const MovieSearch = () => {
       <div className="flex items-center gap-6">
         {/**Основная область */}
 
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           {loading && <p className="mt-4 text-gray-400">Загружаем...</p>}
 
           {error && (
@@ -54,7 +54,7 @@ export const MovieSearch = () => {
           {data?.Search?.length ? (
             <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {data.Search.map((movie) => (
-                <li key={movie.imdbID}>
+                <li key={movie.imdbID} className="h-full">
                   <MovieCard
                     movie={movie}
                     isFavorite={favorites.some(

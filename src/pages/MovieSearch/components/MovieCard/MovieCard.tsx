@@ -1,5 +1,5 @@
 import { Heart } from 'lucide-react';
-import { Button } from '../../../../components/ui/Button';
+
 import type { OmdbMovieBase } from '../../types';
 import { Link } from 'react-router-dom';
 
@@ -15,33 +15,38 @@ export const MovieCard = ({
   onToggleFavorite,
 }: MovieCardProps) => {
   return (
-    <div className="bg-card hover:border-primary relative overflow-hidden rounded-lg border border-gray-700 transition-colors">
-      {/**Кнопка избранного -поверх постера */}
-      <Button
+    <div className="bg-card hover:border-primary relative flex h-full flex-col overflow-hidden rounded-lg border border-gray-700 transition-colors">
+      {/* Кнопка избранного */}
+      <button
         onClick={() => onToggleFavorite(movie)}
-        className="bg-card/50 hover:border-s-card/50 absolute top-2 right-2 z-10 rounded-md p-1.5 transition-colors"
-      />
-      {isFavorite ? (
-        <Heart size={20} className="fill-black text-red-500" />
-      ) : (
-        <Heart size={20} className="fill-black text-white" />
-      )}
+        className="absolute top-2 right-2 z-10 rounded-md bg-black/50 p-1.5 transition-colors hover:bg-black/70"
+      >
+        <Heart
+          size={18}
+          className={
+            isFavorite ? 'fill-red-500 text-red-500' : 'fill-none text-white'
+          }
+        />
+      </button>
 
-      {/**Клик по карточке */}
-      <Link to={`/movies/${movie.imdbID}`} className="block">
+      {/* Клик → детали */}
+      <Link to={`/movies/${movie.imdbID}`} className="flex h-full flex-col">
+        {/* Постер — ВСЕГДА h-64, и картинка и заглушка */}
         {movie.Poster !== 'N/A' ? (
           <img
             src={movie.Poster}
             alt={movie.Title}
-            className="h-52 w-full object-cover"
+            className="h-64 w-full object-cover" // ← фиксированная высота
           />
         ) : (
-          <div className="bg-card text-secondary flex h-52 w-full items-center justify-center text-sm">
+          <div className="flex h-64 w-full items-center justify-center bg-gray-700 text-sm text-gray-500">
+            {/* ↑ h-64 здесь тоже — совпадает с картинкой! */}
             Нет постера
           </div>
         )}
 
-        <div className="p-3">
+        {/* Текст — фиксированная высота */}
+        <div className="flex h-16 flex-col justify-between p-3">
           <p className="text-text-primary line-clamp-2 text-sm leading-tight font-medium">
             {movie.Title}
           </p>

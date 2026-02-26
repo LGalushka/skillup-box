@@ -1,12 +1,29 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMovieDetails } from '../../hooks/useMovieDetails';
 import { Button } from '../../../../components/ui/Button';
-import { MoveLeftIcon } from 'lucide-react';
+import { Heart, MoveLeftIcon } from 'lucide-react';
+import { useLocalStorageMovie } from '../../hooks/useLocalStorageMovies';
+import type { OmdbMovieBase } from '../../types';
 
 export const MovieDetails = () => {
   const { imdbID } = useParams<{ imdbID: string }>();
   const navigate = useNavigate();
   const { data, loading, error } = useMovieDetails(imdbID ?? '');
+  const [favorites, setFavorites] = useLocalStorageMovie<OmdbMovieBase[]>(
+    'movie-favorites',
+    []
+  );
+
+  const isFavorite = favorites.some((f) => f.imdbID === data?.imdbID);
+
+  function toggleFavorite() {
+    if (!data) return;
+    setFavorites((prev) =>
+      isFavorite
+        ? prev.filter((f) => f.imdbID !== data.imdbID)
+        : [...prev, data]
+    );
+  }
 
   if (loading)
     return (
@@ -81,14 +98,26 @@ export const MovieDetails = () => {
           <div className="flex min-w-0 flex-1 flex-col gap-4">
             {/* Заголовок */}
             <div>
-              <h1 className="text-2xl leading-tight font-bold text-white">
-                {data.Title}
-              </h1>
+              <div className="flex">
+                <h1 className="text-2xl leading-tight font-bold text-white">
+                  {data.Title}
+                </h1>
+                <button onClick={toggleFavorite} className="ml-10">
+                  <Heart
+                    size={22}
+                    className={
+                      isFavorite
+                        ? 'fill-red-500 text-red-500'
+                        : 'fill-none text-white'
+                    }
+                  />
+                </button>
+              </div>
+
               <p className="mt-1 text-sm text-gray-400">
                 {data.Year} · {data.Runtime} · {data.Country}
               </p>
             </div>
-
             {/* Рейтинг IMDb */}
             <div className="flex w-fit items-center gap-2 rounded-lg bg-gray-700/50 px-3 py-2">
               <span className="text-lg text-yellow-400">⭐</span>
@@ -100,7 +129,6 @@ export const MovieDetails = () => {
                 ({data.imdbVotes} голосов)
               </span>
             </div>
-
             {/* Жанры — теги */}
             <div className="flex flex-wrap gap-2">
               {data.Genre.split(', ').map((genre) => (
@@ -112,7 +140,6 @@ export const MovieDetails = () => {
                 </span>
               ))}
             </div>
-
             {/* Режиссёр и актёры */}
             <div className="space-y-2 text-sm">
               <div className="flex gap-2">

@@ -3,6 +3,7 @@ import { fitchCoins } from '../../api/cryptoApi';
 import { useCryptoPolling } from '../../hooks/useCryptoPolling';
 import type { Coin } from '../../types/crypto';
 import { CoinCard } from '../CoinCard/CoinCard';
+import CryptoHeader from '../CryptoHeader/CryptoHeader';
 
 export const CryptoTrack = () => {
   const [search, setSearch] = useState<string>('');
@@ -23,14 +24,13 @@ export const CryptoTrack = () => {
   const bitcoin = filteredCoins.find((coin) => coin.id === 'bitcoin');
   return (
     <div className="m-6">
-      <h1>Crypto Track</h1>
+      <CryptoHeader
+        search={search}
+        onSearchChange={setSearch}
+        lastUpdated={lastUpdates}
+      />
 
       {/**Время обновления */}
-      {lastUpdates && (
-        <p className="text-text-secondary text-xs">
-          Обновлено: {lastUpdates.toLocaleTimeString()}
-        </p>
-      )}
 
       {loading && <p>Загружаем...</p>}
       {error && <p className="text-red-500">{error}</p>}

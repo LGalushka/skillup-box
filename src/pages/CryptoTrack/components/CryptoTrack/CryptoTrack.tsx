@@ -6,6 +6,7 @@ import { CoinCard } from '../CoinCard/CoinCard';
 import CryptoHeader from '../CryptoHeader/CryptoHeader';
 import { MarketCapChart } from '../MarketCapChart';
 import { CoinsTable } from '../CoinsTable';
+import { useLocalStorageCoint } from '../../hooks/useLocalStorageCoint';
 
 export const CryptoTrack = () => {
   const [search, setSearch] = useState<string>('');
@@ -14,7 +15,10 @@ export const CryptoTrack = () => {
     (signal) => fitchCoins({ signal })
   );
 
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useLocalStorageCoint<string[]>(
+    'crypto-favorites',
+    []
+  );
 
   const allCoins = data ?? [];
   const filteredCoins = search

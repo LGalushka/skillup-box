@@ -7,7 +7,7 @@ export function useCryptoPolling<T>(
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdates, setLastUpdates] = useState<Date | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
@@ -21,7 +21,7 @@ export function useCryptoPolling<T>(
       try {
         const result = await fetchFn(controller.signal);
         setData(result);
-        setLastUpdates(new Date());
+        setLastUpdated(new Date());
       } catch (err: any) {
         if (err.name !== 'AbortError') {
           setError(err.message || 'Ошибка загрузки');
@@ -39,5 +39,5 @@ export function useCryptoPolling<T>(
       controller.abort();
     };
   }, [enabled]);
-  return { data, loading, error, lastUpdates };
+  return { data, loading, error, lastUpdated };
 }

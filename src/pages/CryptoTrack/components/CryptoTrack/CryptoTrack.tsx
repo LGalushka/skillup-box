@@ -7,12 +7,12 @@ import CryptoHeader from '../CryptoHeader/CryptoHeader';
 import { MarketCapChart } from '../MarketCapChart';
 import { CoinsTable } from '../CoinsTable';
 import { useLocalStorageCoint } from '../../hooks/useLocalStorageCoint';
-import { CointModal } from '../CointModal';
+import { CoinModal } from '../CointModal';
 
 export const CryptoTrack = () => {
   const [search, setSearch] = useState<string>('');
 
-  const { data, loading, error, lastUpdates } = useCryptoPolling<Coin[]>(
+  const { data, loading, error, lastUpdated } = useCryptoPolling<Coin[]>(
     (signal) => fitchCoins({ signal })
   );
 
@@ -46,33 +46,28 @@ export const CryptoTrack = () => {
       <CryptoHeader
         search={search}
         onSearchChange={setSearch}
-        lastUpdated={lastUpdates}
+        lastUpdated={lastUpdated}
       />
-
-      {/**Время обновления */}
 
       {loading && <p>Загружаем...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {/**Список монет */}
-      <div>
-        {topCoints.length > 0 ? (
-          <div className="mb-6 grid grid-cols-3 gap-4">
-            {topCoints.map((coin) => (
-              <CoinCard key={coin.id} crypto={coin} />
-            ))}
-          </div>
-        ) : (
-          <div className="mb-6 grid grid-cols-3 gap-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="bg-card/50 h-48 animate-pulse rounded-lg"
-              />
-            ))}
-          </div>
-        )}
-      </div>
-      <MarketCapChart coins={data ?? []} />
+
+      {topCoints.length > 0 ? (
+        <div className="mb-6 grid grid-cols-3 gap-4">
+          {topCoints.map((coin) => (
+            <CoinCard key={coin.id} crypto={coin} />
+          ))}
+        </div>
+      ) : (
+        <div className="mb-6 grid grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-card/50 h-48 animate-pulse rounded-lg" />
+          ))}
+        </div>
+      )}
+
+      <MarketCapChart coins={allCoins} />
 
       <CoinsTable
         coins={filteredCoins}
@@ -82,7 +77,7 @@ export const CryptoTrack = () => {
       />
 
       {selectedCoin && (
-        <CointModal coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
+        <CoinModal coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
       )}
     </div>
   );

@@ -1,1 +1,1 @@
-export { CointModal } from './CointModal';
+export { CoinModal } from './CointModal';

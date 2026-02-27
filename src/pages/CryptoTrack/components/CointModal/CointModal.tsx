@@ -2,12 +2,12 @@ import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import type { Coin } from '../../types/crypto';
 import { formatMarketCap, formatPrice } from '../../utils';
 
-interface CointModalProps {
+interface CoinModalProps {
   coin: Coin;
   onClose: () => void;
 }
 
-export const CointModal = ({ coin, onClose }: CointModalProps) => {
+export const CoinModal = ({ coin, onClose }: CoinModalProps) => {
   const positive = coin.price_change_percentage_24h >= 0;
   const sparklineData =
     coin.sparkline_in_7d?.price?.map((v, i) => ({ v, i })) ?? [];

@@ -17,6 +17,7 @@ export interface Coin extends CoinBase {
   low_24h: number;
   circulating_supply: number;
   last_updated: string;
+  sparkline_in_7d: { price: number[] };
 }
 
 // Детали одной монеты /coins/:id

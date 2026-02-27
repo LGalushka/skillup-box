@@ -57,7 +57,7 @@ export const CoinCard = ({ crypto }: CoinCardProps) => {
       <div className="flex items-end justify-between">
         <div>
           <p className="text-lg font-bold text-white">
-            {formatPrice(crypto.current_price)}
+            {formatPrice(crypto?.current_price)}
           </p>
           <p className="text-text-secondary text-xs">
             {formatMarketCap(crypto.market_cap)}

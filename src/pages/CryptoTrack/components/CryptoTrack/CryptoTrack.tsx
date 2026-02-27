@@ -4,6 +4,7 @@ import { useCryptoPolling } from '../../hooks/useCryptoPolling';
 import type { Coin } from '../../types/crypto';
 import { CoinCard } from '../CoinCard/CoinCard';
 import CryptoHeader from '../CryptoHeader/CryptoHeader';
+import { MarketCapChart } from '../MarketCapChart';
 
 export const CryptoTrack = () => {
   const [search, setSearch] = useState<string>('');
@@ -34,11 +35,11 @@ export const CryptoTrack = () => {
 
       {loading && <p>Загружаем...</p>}
       {error && <p className="text-red-500">{error}</p>}
-
       {/**Список монет */}
       <div>
         {bitcoin ? <CoinCard crypto={bitcoin} /> : <p>Монета не найдена</p>}
       </div>
+      <MarketCapChart coins={data ?? []} />
     </div>
   );
 };

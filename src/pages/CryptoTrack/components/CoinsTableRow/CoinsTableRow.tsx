@@ -19,7 +19,7 @@ export const CoinsTableRow = ({
   const sparklineData =
     coins.sparkline_in_7d?.price?.map((v, i) => ({ v, i })) ?? [];
   return (
-    <div className="grid grid-cols-[40px_40px_1fr_120px_100px_120px_80px] items-center gap-2 px-8 py-3">
+    <div className="grid grid-cols-[40px_40px_1fr_120px_120px_120px_120px] items-center gap-2 px-8 py-3">
       {/**Кнопка */}
       <div>
         <button
@@ -45,7 +45,7 @@ export const CoinsTableRow = ({
       </div>
 
       {/**Лого название символ */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-6">
         <img
           src={coins.image}
           alt={coins.name}

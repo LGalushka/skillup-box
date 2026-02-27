@@ -25,7 +25,7 @@ export const CryptoTrack = () => {
       )
     : allCoins.slice(0, 10);
 
-  const bitcoin = filteredCoins.find((coin) => coin.id === 'bitcoin');
+  const topCoints = allCoins.slice(0, 3);
 
   const toggleFavorite = (coinID: string) => {
     setFavorites((prev) =>
@@ -48,7 +48,22 @@ export const CryptoTrack = () => {
       {error && <p className="text-red-500">{error}</p>}
       {/**Список монет */}
       <div>
-        {bitcoin ? <CoinCard crypto={bitcoin} /> : <p>Монета не найдена</p>}
+        {topCoints.length > 0 ? (
+          <div className="mb-6 grid grid-cols-3 gap-4">
+            {topCoints.map((coin) => (
+              <CoinCard key={coin.id} crypto={coin} />
+            ))}
+          </div>
+        ) : (
+          <div className="mb-6 grid grid-cols-3 gap-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-card/50 h-48 animate-pulse rounded-lg"
+              />
+            ))}
+          </div>
+        )}
       </div>
       <MarketCapChart coins={data ?? []} />
 

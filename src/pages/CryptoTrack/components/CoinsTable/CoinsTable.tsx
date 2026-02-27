@@ -15,8 +15,8 @@ export const CoinsTable = ({
   return (
     <div className="bg-card/50 items-start overflow-hidden rounded-lg border border-gray-700/50">
       {/* Заголовок */}
-      <div className="grid grid-cols-[40px_40px_1fr_120px_100px_120px_80px] items-center gap-2 border-b border-gray-700/50 px-8 py-3">
-        <div /> {/* ⭐ */}
+      <div className="grid grid-cols-[40px_40px_1fr_120px_120px_120px_120px] items-center gap-2 border-b border-gray-700/50 px-8 py-3">
+        <span className="text-center">⭐</span>
         <span className="text-text-secondary text-xs font-bold tracking-widest uppercase">
           #
         </span>

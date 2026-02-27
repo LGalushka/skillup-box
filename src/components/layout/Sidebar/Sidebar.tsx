@@ -119,7 +119,7 @@ export const Sidebar = () => {
       <div className="pt-md border-border-color border-t">
         <div className="text-text-secondary mb-1 flex justify-between text-[10px]">
           <span>Прогресс обучения</span>
-          <span>48%</span>
+          <span>72%</span>
         </div>
         <div className="bg-main h-1.5 w-full overflow-hidden rounded-full">
           <div className="bg-primary h-full w-[40%] transition-all duration-1000"></div>

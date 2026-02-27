@@ -1,48 +1,43 @@
-// hooks/useAsyncResource.ts
-import { useState, useEffect, type DependencyList } from 'react';
+import { useEffect, useState } from 'react';
 
-export function useAsyncResource<T>(
+export function useCryptoPolling<T>(
   fetchFn: (signal: AbortSignal) => Promise<T>,
-  deps: DependencyList = [],
   enabled: boolean = true
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
 
-    let ignore = false;
     const controller = new AbortController();
 
-    async function load() {
-      setLoading(true);
+    async function loadCoins(isFirst = false) {
+      if (isFirst) setLoading(true);
       setError(null);
 
       try {
         const result = await fetchFn(controller.signal);
-        if (!ignore) {
-          setData(result);
-        }
+        setData(result);
+        setLastUpdated(new Date());
       } catch (err: any) {
-        if (err.name !== 'AbortError' && !ignore) {
+        if (err.name !== 'AbortError') {
           setError(err.message || 'Ошибка загрузки');
         }
       } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
+        if (isFirst) setLoading(false);
       }
     }
+    loadCoins(true);
 
-    load();
+    const interval = setInterval(() => loadCoins(false), 30000);
 
     return () => {
-      ignore = true;
+      clearInterval(interval);
       controller.abort();
     };
-  }, [enabled, ...deps]);
-
-  return { data, loading, error };
+  }, [enabled]);
+  return { data, loading, error, lastUpdated };
 }

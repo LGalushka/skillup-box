@@ -5,10 +5,10 @@ import { TodoApp } from './pages/TodoApp';
 import { HabitTracker } from './pages/HabitTracker';
 import { WeatherApp } from './pages/WeatherApp';
 import { MovieSearch } from './pages/MovieSearch';
-import { CryptoTrack } from './pages/CryptoTrack';
 import { TicTacToe } from './pages/TicTacToe';
 import { GuessNumber } from './pages/GuessNumber';
 import { MovieDetails } from './pages/MovieSearch/components/MovieDetails';
+import { CryptoTrack } from './pages/CryptoTrack';
 
 function App() {
   return (

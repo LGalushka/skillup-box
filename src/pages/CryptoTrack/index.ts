@@ -1,1 +1,1 @@
-export { CryptoTrack } from './CryptoTrack';
+export { CryptoTrack } from './components/CryptoTrack/CryptoTrack';

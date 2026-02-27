@@ -1,1 +1,0 @@
-export { CoinModal } from './CointModal';

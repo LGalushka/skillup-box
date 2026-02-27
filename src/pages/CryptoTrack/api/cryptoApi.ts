@@ -1,7 +1,7 @@
 import type { Coin, CoinDetails } from '../types/crypto';
 import { ENDPOINTS } from './cryptoUrl';
 
-export const fitchCoins = async (
+export const fetchCoins = async (
   options: RequestInit = {}
 ): Promise<Coin[]> => {
   const url = ENDPOINTS.markets();

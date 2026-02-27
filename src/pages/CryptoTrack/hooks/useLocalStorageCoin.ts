@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useLocalStorageCoint<T>(
+export function useLocalStorageCoin<T>(
   key: string,
   initialValue: T
 ): [T, (value: T | ((val: T) => T)) => void] {

@@ -1,37 +1,41 @@
-import { useState } from 'react';
-import { fitchCoins } from '../../api/cryptoApi';
+import { useMemo, useState } from 'react';
+import { fetchCoins } from '../../api/cryptoApi';
 import { useCryptoPolling } from '../../hooks/useCryptoPolling';
 import type { Coin } from '../../types/crypto';
 import { CoinCard } from '../CoinCard/CoinCard';
 import CryptoHeader from '../CryptoHeader/CryptoHeader';
 import { MarketCapChart } from '../MarketCapChart';
 import { CoinsTable } from '../CoinsTable';
-import { useLocalStorageCoint } from '../../hooks/useLocalStorageCoint';
-import { CoinModal } from '../CointModal';
+import { useLocalStorageCoin } from '../../hooks/useLocalStorageCoin';
+import { CoinModal } from '../CoinModal';
 
 export const CryptoTrack = () => {
   const [search, setSearch] = useState<string>('');
 
   const { data, loading, error, lastUpdated } = useCryptoPolling<Coin[]>(
-    (signal) => fitchCoins({ signal })
+    (signal) => fetchCoins({ signal })
   );
 
-  const [favorites, setFavorites] = useLocalStorageCoint<string[]>(
+  const [favorites, setFavorites] = useLocalStorageCoin<string[]>(
     'crypto-favorites',
     []
   );
   const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
 
   const allCoins = data ?? [];
-  const filteredCoins = search
-    ? allCoins.filter(
-        (coin) =>
-          coin.name.toLowerCase().includes(search.trim().toLowerCase()) ||
-          coin.symbol.toLowerCase().includes(search.trim().toLowerCase())
-      )
-    : allCoins.slice(0, 10);
 
-  const topCoints = allCoins.slice(0, 3);
+  const filteredCoins = useMemo(() => {
+    const normalizedSearch = search.trim().toLocaleLowerCase();
+    return normalizedSearch
+      ? allCoins.filter(
+          (coin) =>
+            coin.name.toLowerCase().includes(normalizedSearch) ||
+            coin.symbol.toLowerCase().includes(normalizedSearch)
+        )
+      : allCoins.slice(0, 10);
+  }, [search, allCoins]);
+
+  const topCoins = allCoins.slice(0, 3);
 
   const toggleFavorite = (coinID: string) => {
     setFavorites((prev) =>
@@ -53,9 +57,9 @@ export const CryptoTrack = () => {
       {error && <p className="text-red-500">{error}</p>}
       {/**Список монет */}
 
-      {topCoints.length > 0 ? (
+      {topCoins.length > 0 ? (
         <div className="mb-6 grid grid-cols-3 gap-4">
-          {topCoints.map((coin) => (
+          {topCoins.map((coin) => (
             <CoinCard key={coin.id} crypto={coin} />
           ))}
         </div>

@@ -7,23 +7,31 @@ interface CoinsTableRowProps {
   coins: Coin;
   favorites: string[];
   onToggleFavorite: (id: string) => void;
+  onSelectCoin: (coin: Coin) => void;
 }
 
 export const CoinsTableRow = ({
   coins,
   favorites,
   onToggleFavorite,
+  onSelectCoin,
 }: CoinsTableRowProps) => {
   const positive = coins.price_change_percentage_24h >= 0;
 
   const sparklineData =
     coins.sparkline_in_7d?.price?.map((v, i) => ({ v, i })) ?? [];
   return (
-    <div className="grid grid-cols-[40px_40px_1fr_120px_120px_120px_120px] items-center gap-2 px-8 py-3">
+    <div
+      className="grid grid-cols-[40px_40px_1fr_120px_120px_120px_120px] items-center gap-2 px-8 py-3"
+      onClick={() => onSelectCoin(coins)}
+    >
       {/**Кнопка */}
       <div>
         <button
-          onClick={() => onToggleFavorite(coins.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(coins.id);
+          }}
           className="rounded-md p-1.5 transition-colors hover:bg-black/20"
         >
           <Star

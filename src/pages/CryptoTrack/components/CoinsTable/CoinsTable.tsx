@@ -5,12 +5,14 @@ interface CoinsTableProps {
   coins: Coin[];
   favorites: string[];
   onToggleFavorite: (id: string) => void;
+  onSelectCoin: (coin: Coin) => void;
 }
 
 export const CoinsTable = ({
   coins,
   favorites,
   onToggleFavorite,
+  onSelectCoin,
 }: CoinsTableProps) => {
   return (
     <div className="bg-card/50 items-start overflow-hidden rounded-lg border border-gray-700/50">
@@ -49,6 +51,7 @@ export const CoinsTable = ({
             coins={coin}
             favorites={favorites}
             onToggleFavorite={onToggleFavorite}
+            onSelectCoin={onSelectCoin}
           />
         </div>
       ))}

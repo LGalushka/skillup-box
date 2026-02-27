@@ -1,0 +1,1 @@
+export { CointModal } from './CointModal';

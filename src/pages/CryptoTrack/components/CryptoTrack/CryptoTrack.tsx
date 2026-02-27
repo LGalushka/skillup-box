@@ -7,6 +7,7 @@ import CryptoHeader from '../CryptoHeader/CryptoHeader';
 import { MarketCapChart } from '../MarketCapChart';
 import { CoinsTable } from '../CoinsTable';
 import { useLocalStorageCoint } from '../../hooks/useLocalStorageCoint';
+import { CointModal } from '../CointModal';
 
 export const CryptoTrack = () => {
   const [search, setSearch] = useState<string>('');
@@ -19,6 +20,7 @@ export const CryptoTrack = () => {
     'crypto-favorites',
     []
   );
+  const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
 
   const allCoins = data ?? [];
   const filteredCoins = search
@@ -38,6 +40,7 @@ export const CryptoTrack = () => {
         : [...prev, coinID]
     );
   };
+
   return (
     <div className="m-6">
       <CryptoHeader
@@ -75,7 +78,12 @@ export const CryptoTrack = () => {
         coins={filteredCoins}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
+        onSelectCoin={setSelectedCoin}
       />
+
+      {selectedCoin && (
+        <CointModal coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
+      )}
     </div>
   );
 };

@@ -21,7 +21,7 @@ type QuizAction =
   | { type: 'FINISH' }
   | { type: 'RESTART' };
 
-const initialState: QuizState = {
+export const initialState: QuizState = {
   status: 'idle',
   questions: [],
   currentIndex: 0,

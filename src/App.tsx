@@ -5,7 +5,7 @@ import { TodoApp } from './pages/TodoApp';
 import { HabitTracker } from './pages/HabitTracker';
 import { WeatherApp } from './pages/WeatherApp';
 import { MovieSearch } from './pages/MovieSearch';
-import { TicTacToe } from './pages/TicTacToe';
+import { QuizApp } from './pages/Quiz App';
 import { GuessNumber } from './pages/GuessNumber';
 import { MovieDetails } from './pages/MovieSearch/components/MovieDetails';
 import { CryptoTrack } from './pages/CryptoTrack';
@@ -25,7 +25,7 @@ function App() {
           </Route>
 
           <Route path="crypto" element={<CryptoTrack />} />
-          <Route path="tictac" element={<TicTacToe />} />
+          <Route path="quiz" element={<QuizApp />} />
           <Route path="guess" element={<GuessNumber />} />
         </Route>
       </Routes>

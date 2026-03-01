@@ -46,6 +46,15 @@
   /* === Анимации (Transitions) === */
   --animate-fast: 0.2s ease-in-out;
   --animate-normal: 0.3s ease-in-out;
+
+  /* Добавляем градиент для верхнего прогресс-бара */
+  --background-image-quiz-gradient: linear-gradient(to right, #f97316, #fbbf24);
+
+  /* Добавляем синее свечение для выбранного ответа */
+  --shadow-neon-blue: 0 0 15px rgba(59, 130, 246, 0.5);
+
+  /* Акцентный оранжевый для прогресса и цифр */
+  --color-accent-orange: #f97316;
 }
 
 /* Применяем базовые стили к body */

@@ -1,10 +1,10 @@
 import {
   Binary,
+  BrainCircuit,
   CalendarCheck,
   Clapperboard,
   CloudSun,
   Coins,
-  Grid3X3,
   ListTodo,
   type LucideIcon,
 } from 'lucide-react';
@@ -65,13 +65,13 @@ export const PROJECTS: Project[] = [
     path: '/crypto',
   },
   {
-    title: 'Tic Tac Toe',
-    icon: Grid3X3,
+    title: 'Quiz App',
+    icon: BrainCircuit,
     description:
-      'Классическая игра: алгоритм проверки победителя, состояние игрового поля и история ходов.',
+      'Интерактивная викторина: работа с таймером, логика подсчета баллов и динамическая смена вопросов.',
     category: 'Игры',
-    difficulty: 'Easy',
-    path: '/tictac',
+    difficulty: 'Medium',
+    path: '/quiz',
   },
   {
     title: 'Guess Number',

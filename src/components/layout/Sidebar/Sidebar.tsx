@@ -1,10 +1,10 @@
 import {
   Binary,
+  BrainCircuit,
   CalendarCheck,
   Clapperboard,
   CloudSun,
   Coins,
-  Grid3X3Icon,
   ListTodo,
 } from 'lucide-react';
 import { Button } from '../../ui/Button';
@@ -97,12 +97,12 @@ export const Sidebar = () => {
             Игры
           </h3>
           <Button
-            variant={isActive('/tictac') ? 'primary' : 'secondary'}
+            variant={isActive('/quiz') ? 'primary' : 'secondary'}
             className="hover:border-border-color h-11 w-full justify-start gap-3 border border-transparent"
-            onClick={() => navigate('/tictac')}
+            onClick={() => navigate('/quiz')}
           >
-            <Grid3X3Icon size={20} className="stroke-[1.5px]" />
-            <span>Tic Tac Toe</span>
+            <BrainCircuit size={20} className="stroke-[1.5px]" />
+            <span>Quiz App</span>
           </Button>
           <Button
             variant={isActive('/guess') ? 'primary' : 'secondary'}

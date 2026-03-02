@@ -20,7 +20,6 @@ export function useQuiz(params: QuizParams = { amount: 10 }) {
 
   useEffect(() => {
     if (apiQuestions && apiQuestions.length > 0) {
-      // Берем только нужные поля
       const questions: Question[] = apiQuestions.map((q: any) => ({
         question: q.question,
         correct_answer: q.correct_answer,

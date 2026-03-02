@@ -15,7 +15,5 @@ export interface QuizResponse {
 export interface Question {
   question: string;
   correct_answer: string;
-  answers: string[];
-  isAnswered: boolean;
-  selectedAnswer: string | null;
+  incorrect_answers: string[];
 }

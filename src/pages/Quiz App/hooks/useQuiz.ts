@@ -19,17 +19,28 @@ export function useQuiz(params: QuizParams = { amount: 10 }) {
   );
 
   useEffect(() => {
-    if (apiQuestions && apiQuestions.length > 0) {
-      const questions: Question[] = apiQuestions.map((q: any) => ({
-        question: q.question,
-        correct_answer: q.correct_answer,
-        incorrect_answers: q.incorrect_answers,
-      }));
+    if (!apiQuestions || apiQuestions.length === 0) return;
 
-      dispatch({ type: 'START', payload: questions });
-    }
+    const questions: Question[] = apiQuestions.map((q) => ({
+      question: q.question,
+      correct_answer: q.correct_answer,
+      answers: [...q.incorrect_answers, q.correct_answer].sort(
+        () => Math.random() - 0.5
+      ),
+      isAnswered: false,
+      selectedAnswer: null,
+    }));
+    dispatch({ type: 'START', payload: questions });
   }, [apiQuestions]);
 
+  useEffect(() => {
+    if (state.status !== 'playing') return;
+    if (state.selectedAnswer !== null) return;
+    const timer = setInterval(() => {
+      dispatch({ type: 'TICK' });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [state.status, state.selectedAnswer, state.currentIndex]);
   return {
     ...state,
     loading,

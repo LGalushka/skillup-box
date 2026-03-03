@@ -1,70 +1,73 @@
-import { useReducer } from 'react';
 import { QuestionsList } from './components/QuestionsList/QuestionsList';
 import { QuizHeader } from './components/QuizHeader/QuizHeader';
-import { initialState, quizReducer } from './hooks';
+import { useQuiz } from './hooks/useQuiz';
 
 export const QuizApp = () => {
-  // 1. Инициализируем состояние через редьюсер
-  const [state, dispatch] = useReducer(quizReducer, initialState);
+  const {
+    questions,
+    currentIndex,
+    selectedAnswer,
+    status,
+    score,
+    timeLeft,
+    loading,
+    error,
+    dispatch,
+  } = useQuiz();
 
-  // Извлекаем нужные данные из state для удобства
-  const { questions, currentIndex, selectedAnswer, status } = state;
   const currentQuestion = questions[currentIndex];
 
-  // 2. Функция-обработчик для выбора ответа
   const handleAnswer = (answer: string) => {
     dispatch({ type: 'ANSWER', payload: answer });
-
-    // Опционально: через 1.5 секунды переключаем на следующий вопрос
     setTimeout(() => {
       dispatch({ type: 'NEXT' });
     }, 1500);
   };
 
-  // Если вопросы еще не загружены (статус idle)
-  if (status === 'idle') {
+  // Загрузка
+  if (loading) return <p className="p-10 text-center">Загружаем вопросы...</p>;
+
+  // Ошибка
+  if (error) return <p className="p-10 text-center text-red-500">{error}</p>;
+
+  // Игра идёт
+  if (status === 'playing' && currentQuestion) {
     return (
-      <div className="flex justify-center p-10">
+      <div className="bg-main min-h-screen p-6">
+        <QuizHeader questions={questions ?? []} currentIndex={currentIndex} />
+        {/* Прогресс */}
+        <p className="text-text-secondary mb-4 text-center">
+          Вопрос {currentIndex + 1} из {questions.length} · ⏱️ {timeLeft}сек ·
+          🏆 {score}
+        </p>
+
+        <QuestionsList
+          currentQuestion={currentQuestion}
+          selectedAnswer={selectedAnswer}
+          onAnswer={handleAnswer}
+        />
+      </div>
+    );
+  }
+
+  // Результаты
+  if (status === 'finished') {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+        <h2 className="text-2xl font-bold text-white">Тест завершён!</h2>
+        <p className="text-text-secondary">
+          Твой счёт: {score} из {questions.length * 100}
+        </p>
         <button
-          className="bg-primary p-md rounded-box-md text-white"
-          onClick={() =>
-            dispatch({
-              type: 'START',
-              payload: [] /* Сюда передайте массив Question[] */,
-            })
-          }
+          className="bg-primary rounded-lg px-6 py-2 text-white"
+          onClick={() => dispatch({ type: 'RESTART' })}
         >
-          Начать тест
+          Играть снова
         </button>
       </div>
     );
   }
 
-  return (
-    <div className="bg-main p-spacing-md min-h-screen">
-      {/* Передаем прогресс в хедер (например, номер вопроса) */}
-      <QuizHeader />
-
-      <main className="mt-lg">
-        {currentQuestion && (
-          <QuestionsList
-            currentQuestion={currentQuestion}
-            selectedAnswer={selectedAnswer}
-            onAnswer={handleAnswer}
-          />
-        )}
-      </main>
-
-      {/* Если тест окончен, можно показать результат */}
-      {status === 'finished' && (
-        <div className="text-text-light mt-xl text-center">
-          <h2 className="text-xl">Тест завершен!</h2>
-          <p>Ваш счет: {state.score}</p>
-          <button onClick={() => dispatch({ type: 'RESTART' })}>
-            Повторить
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  // idle — вопросы ещё грузятся
+  return <p className="p-10 text-center text-gray-500">Подготовка игры...</p>;
 };

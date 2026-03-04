@@ -4,6 +4,7 @@ import { QuizHeader } from './components/QuizHeader/QuizHeader';
 import { useQuiz } from './hooks/useQuiz';
 import { useQuizStats } from './hooks/useQuizStats';
 import { QuizStatsBlock1 } from './components/QuizStatsBlock1/QuizStatsBlock1';
+import { QuizStatsBlock2 } from './components/QuizStatsBlock2/QuizStatsBlock2';
 
 export const QuizApp = () => {
   const {
@@ -100,6 +101,8 @@ export const QuizApp = () => {
       )}
 
       <QuizStatsBlock1 stats={stats} />
+
+      <QuizStatsBlock2 stats={stats} totalQuestions={questions.length} />
     </div>
   );
 };

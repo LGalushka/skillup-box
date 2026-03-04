@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { QuestionsList } from './components/QuestionsList/QuestionsList';
 import { QuizHeader } from './components/QuizHeader/QuizHeader';
 import { useQuiz } from './hooks/useQuiz';
+import { useQuizStats } from './hooks/useQuizStats';
 
 export const QuizApp = () => {
   const {
@@ -10,6 +12,7 @@ export const QuizApp = () => {
     status,
     score,
     timeLeft,
+    correctAnswers,
     loading,
     error,
     dispatch,
@@ -18,12 +21,20 @@ export const QuizApp = () => {
 
   const currentQuestion = questions[currentIndex];
 
+  const { stats, saveResult } = useQuizStats();
+
   const handleAnswer = (answer: string) => {
     dispatch({ type: 'ANSWER', payload: answer });
     setTimeout(() => {
       dispatch({ type: 'NEXT' });
     }, 1500);
   };
+
+  useEffect(() => {
+    if (status === 'finished') {
+      saveResult(score, 'medium', correctAnswers, questions.length);
+    }
+  }, [status]);
 
   return (
     <div className="bg-main min-h-screen p-6">
@@ -80,7 +91,7 @@ export const QuizApp = () => {
           </p>
           <button
             className="bg-primary rounded-lg px-6 py-2 text-white"
-            onClick={() => dispatch({ type: 'RESTART' })}
+            onClick={startGame}
           >
             Играть снова
           </button>

@@ -20,7 +20,11 @@ export function useQuiz(params: QuizParams = { amount: 10 }) {
   );
 
   function startGame() {
-    setShouldLoad(true);
+    dispatch({ type: 'RESTART' }); // ← сбрасываем state
+    setShouldLoad(false); // ← сбрасываем флаг
+    setTimeout(() => {
+      setShouldLoad(true); // ← запускаем загрузку заново
+    }, 0);
   }
 
   useEffect(() => {

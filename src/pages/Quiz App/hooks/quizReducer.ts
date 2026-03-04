@@ -10,6 +10,7 @@ interface QuizState {
   score: number;
   timeLeft: number;
   selectedAnswer: string | null;
+  correctAnswers: number;
 }
 
 //Действия
@@ -28,6 +29,7 @@ export const initialState: QuizState = {
   score: 0,
   timeLeft: 30,
   selectedAnswer: null,
+  correctAnswers: 0,
 };
 
 export function quizReducer(state: QuizState, action: QuizAction): QuizState {
@@ -41,6 +43,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         score: 0,
         timeLeft: 30,
         selectedAnswer: null,
+        correctAnswers: 0,
       };
     case 'ANSWER':
       if (state.selectedAnswer !== null) return state;
@@ -50,6 +53,9 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         ...state,
         selectedAnswer: action.payload,
         score: isCorrect ? state.score + 100 : state.score,
+        correctAnswers: isCorrect
+          ? state.correctAnswers + 1
+          : state.correctAnswers,
       };
 
     case 'NEXT':

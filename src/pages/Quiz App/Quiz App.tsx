@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { QuestionsList } from './components/QuestionsList/QuestionsList';
 import { QuizHeader } from './components/QuizHeader/QuizHeader';
 import { useQuiz } from './hooks/useQuiz';
@@ -19,11 +19,14 @@ export const QuizApp = () => {
     error,
     dispatch,
     startGame,
-  } = useQuiz();
+  } = useQuiz({ amount: 10, difficulty: 'medium' });
 
   const currentQuestion = questions[currentIndex];
 
   const { stats, saveResult } = useQuizStats();
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(
+    'medium'
+  );
 
   const handleAnswer = (answer: string) => {
     dispatch({ type: 'ANSWER', payload: answer });
@@ -34,7 +37,7 @@ export const QuizApp = () => {
 
   useEffect(() => {
     if (status === 'finished') {
-      saveResult(score, 'medium', correctAnswers, questions.length);
+      saveResult(score, difficulty, correctAnswers, questions.length);
     }
   }, [status]);
 
@@ -60,6 +63,31 @@ export const QuizApp = () => {
           <p className="text-text-secondary text-sm">
             10 вопросов · 30 секунд на вопрос
           </p>
+
+          {/* Выбор сложности */}
+          <div className="flex gap-3">
+            {(['easy', 'medium', 'hard'] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => setDifficulty(d)}
+                className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
+                  difficulty === d
+                    ? d === 'easy'
+                      ? 'bg-green-500 text-white'
+                      : d === 'medium'
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-red-500 text-white'
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                {d === 'easy'
+                  ? '😊 Лёгкий'
+                  : d === 'medium'
+                    ? '😤 Средний'
+                    : '💀 Сложный'}
+              </button>
+            ))}
+          </div>
           <button
             className="bg-primary hover:bg-primary-hover rounded-lg px-8 py-3 font-bold text-white transition-colors"
             onClick={startGame}

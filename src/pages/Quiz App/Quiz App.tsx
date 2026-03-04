@@ -3,6 +3,7 @@ import { QuestionsList } from './components/QuestionsList/QuestionsList';
 import { QuizHeader } from './components/QuizHeader/QuizHeader';
 import { useQuiz } from './hooks/useQuiz';
 import { useQuizStats } from './hooks/useQuizStats';
+import { QuizStatsBlock1 } from './components/QuizStatsBlock1/QuizStatsBlock1';
 
 export const QuizApp = () => {
   const {
@@ -97,6 +98,8 @@ export const QuizApp = () => {
           </button>
         </div>
       )}
+
+      <QuizStatsBlock1 stats={stats} />
     </div>
   );
 };

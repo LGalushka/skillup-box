@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
 import { QuestionsList } from './components/QuestionsList/QuestionsList';
 import { QuizHeader } from './components/QuizHeader/QuizHeader';
 import { useQuiz } from './hooks/useQuiz';
+import { useQuizStats } from './hooks/useQuizStats';
+import { QuizStatsBlock1 } from './components/QuizStatsBlock1/QuizStatsBlock1';
+import { QuizStatsBlock2 } from './components/QuizStatsBlock2/QuizStatsBlock2';
 
 export const QuizApp = () => {
   const {
@@ -10,12 +14,19 @@ export const QuizApp = () => {
     status,
     score,
     timeLeft,
+    correctAnswers,
     loading,
     error,
     dispatch,
-  } = useQuiz();
+    startGame,
+  } = useQuiz({ amount: 10, difficulty: 'medium' });
 
   const currentQuestion = questions[currentIndex];
+
+  const { stats, saveResult } = useQuizStats();
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(
+    'medium'
+  );
 
   const handleAnswer = (answer: string) => {
     dispatch({ type: 'ANSWER', payload: answer });
@@ -24,50 +35,102 @@ export const QuizApp = () => {
     }, 1500);
   };
 
-  // Загрузка
-  if (loading) return <p className="p-10 text-center">Загружаем вопросы...</p>;
+  useEffect(() => {
+    if (status === 'finished') {
+      saveResult(score, difficulty, correctAnswers, questions.length);
+    }
+  }, [status]);
 
-  // Ошибка
-  if (error) return <p className="p-10 text-center text-red-500">{error}</p>;
+  return (
+    <div className="bg-main min-h-screen p-6">
+      <QuizHeader
+        questions={questions ?? []}
+        currentIndex={currentIndex}
+        timeLeft={timeLeft}
+        score={score}
+      />
 
-  // Игра идёт
-  if (status === 'playing' && currentQuestion) {
-    return (
-      <div className="bg-main min-h-screen p-6">
-        <QuizHeader questions={questions ?? []} currentIndex={currentIndex} />
-        {/* Прогресс */}
-        <p className="text-text-secondary mb-4 text-center">
-          Вопрос {currentIndex + 1} из {questions.length} · ⏱️ {timeLeft}сек ·
-          🏆 {score}
-        </p>
+      {loading && (
+        <div className="mt-20 flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-600 border-t-blue-500" />
+          <p className="text-text-secondary text-sm">Загружаем вопросы...</p>
+        </div>
+      )}
 
+      {!loading && status === 'idle' && (
+        <div className="mt-20 flex flex-col items-center gap-6">
+          <h2 className="text-2xl font-bold text-white">Готов к тесту?</h2>
+          <p className="text-text-secondary text-sm">
+            10 вопросов · 30 секунд на вопрос
+          </p>
+
+          {/* Выбор сложности */}
+          <div className="flex gap-3">
+            {(['easy', 'medium', 'hard'] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => setDifficulty(d)}
+                className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
+                  difficulty === d
+                    ? d === 'easy'
+                      ? 'bg-green-500 text-white'
+                      : d === 'medium'
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-red-500 text-white'
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                {d === 'easy'
+                  ? '😊 Лёгкий'
+                  : d === 'medium'
+                    ? '😤 Средний'
+                    : '💀 Сложный'}
+              </button>
+            ))}
+          </div>
+          <button
+            className="bg-primary hover:bg-primary-hover rounded-lg px-8 py-3 font-bold text-white transition-colors"
+            onClick={startGame}
+          >
+            Начать игру →
+          </button>
+        </div>
+      )}
+
+      {error && <p className="mt-10 text-center text-red-500">{error}</p>}
+
+      {/* Прогресс */}
+      <p className="text-text-secondary mt-6 mb-4 text-center">
+        Вопрос {currentIndex + 1} из {questions.length} · ⏱️ {timeLeft}сек · 🏆{' '}
+        {score}
+      </p>
+
+      {status === 'playing' && currentQuestion && (
         <QuestionsList
           currentQuestion={currentQuestion}
           selectedAnswer={selectedAnswer}
           onAnswer={handleAnswer}
         />
-      </div>
-    );
-  }
+      )}
 
-  // Результаты
-  if (status === 'finished') {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-        <h2 className="text-2xl font-bold text-white">Тест завершён!</h2>
-        <p className="text-text-secondary">
-          Твой счёт: {score} из {questions.length * 100}
-        </p>
-        <button
-          className="bg-primary rounded-lg px-6 py-2 text-white"
-          onClick={() => dispatch({ type: 'RESTART' })}
-        >
-          Играть снова
-        </button>
-      </div>
-    );
-  }
+      {status === 'finished' && (
+        <div className="mt-10 flex flex-col items-center gap-4">
+          <h2 className="text-2xl font-bold text-white">Тест завершён!</h2>
+          <p className="text-text-secondary">
+            Твой счёт: {score} из {questions.length * 100}
+          </p>
+          <button
+            className="bg-primary rounded-lg px-6 py-2 text-white"
+            onClick={startGame}
+          >
+            Играть снова
+          </button>
+        </div>
+      )}
 
-  // idle — вопросы ещё грузятся
-  return <p className="p-10 text-center text-gray-500">Подготовка игры...</p>;
+      <QuizStatsBlock1 stats={stats} />
+
+      <QuizStatsBlock2 stats={stats} totalQuestions={questions.length} />
+    </div>
+  );
 };

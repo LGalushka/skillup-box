@@ -12,7 +12,7 @@ export function QuestionsList({
   onAnswer,
 }: QuestionsListProps) {
   return (
-    <div className="bg-card/50 rounded-box-md p-lg mx-auto max-w-2xl shadow-md">
+    <div className="bg-card/50 rounded-b-box-md p-lg mx-auto max-w-2xl shadow-md">
       <h2
         className="text-text-primary mb-xl text-center text-xl font-bold tracking-wide uppercase"
         dangerouslySetInnerHTML={{ __html: currentQuestion.question }}

@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { initialState, quizReducer } from './quizReducer';
 import type { QuizParams } from '../api/quizUrl';
 import { useAsyncResource } from '../../MovieSearch/hooks';
@@ -7,6 +7,7 @@ import { fetchQuizData } from '../api/quizAPI';
 
 export function useQuiz(params: QuizParams = { amount: 10 }) {
   const [state, dispatch] = useReducer(quizReducer, initialState);
+  const [shouldLoad, setShouldLoad] = useState<boolean>(false);
 
   const {
     data: apiQuestions,
@@ -14,9 +15,13 @@ export function useQuiz(params: QuizParams = { amount: 10 }) {
     error,
   } = useAsyncResource<QuizQuestion[]>(
     (signal) => fetchQuizData(params, { signal }),
-    [params.amount, params.category, params.difficulty],
-    state.status === 'idle'
+    [params.amount],
+    shouldLoad
   );
+
+  function startGame() {
+    setShouldLoad(true);
+  }
 
   useEffect(() => {
     if (!apiQuestions || apiQuestions.length === 0) return;
@@ -46,5 +51,6 @@ export function useQuiz(params: QuizParams = { amount: 10 }) {
     loading,
     error,
     dispatch,
+    startGame,
   };
 }

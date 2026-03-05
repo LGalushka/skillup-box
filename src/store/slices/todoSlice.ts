@@ -89,7 +89,7 @@ export const selectDeleteConfirmation = (state: RootState) =>
 
 export const selectStats = createSelector(selectTodos, (todos) => {
   const total = todos.length;
-  const completed = todos.filter((t) => t.completed).length;
+  const completed = todos.filter((t: Todo) => t.completed).length;
   const active = total - completed;
   return {
     total,
@@ -106,9 +106,9 @@ export const selectFilteredTodos = createSelector(
   (todos, filter) => {
     switch (filter) {
       case 'active':
-        return todos.filter((t) => !t.completed);
+        return todos.filter((t: Todo) => !t.completed);
       case 'completed':
-        return todos.filter((t) => t.completed);
+        return todos.filter((t: Todo) => t.completed);
       default:
         return todos;
     }

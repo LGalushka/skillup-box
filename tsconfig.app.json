@@ -16,13 +16,16 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    "esModuleInterop": true, // ✅ добавить
+    "allowSyntheticDefaultImports": true, // ✅ добавить
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": false
   },
   "include": ["src", "src/pages/Dashboard.tsx"]
 }

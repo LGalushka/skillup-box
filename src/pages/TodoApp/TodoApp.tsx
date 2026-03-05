@@ -8,8 +8,7 @@ import {
   TodoHeader,
   TodoConfirmModal,
 } from './components';
-
-export type Filter = 'all' | 'active' | 'completed';
+import type { Filter } from './types';
 
 export const TodoApp = () => {
   const {

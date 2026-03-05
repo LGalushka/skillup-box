@@ -1,5 +1,21 @@
-import { useMemo, useState } from 'react';
-import { useTodos } from './hooks';
+import { useState } from 'react';
+import {
+  addTodo,
+  toggleTodo,
+  setFilter,
+  requestDelete,
+  confirmDelete,
+  updateTodo,
+  cancelDelete,
+} from '../../store/slices/todoSlice';
+
+import {
+  selectFilter,
+  selectDeleteConfirmation,
+  selectStats,
+  selectFilteredTodos,
+} from '../../store/slices/todoSlice';
+
 import {
   TodoFilter,
   TodoStats,
@@ -8,38 +24,18 @@ import {
   TodoHeader,
   TodoConfirmModal,
 } from './components';
-import type { Filter } from './types';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 export const TodoApp = () => {
-  const {
-    todos,
-    stats,
-    addTodo,
-    toggleTodo,
-    updateTodo,
-    deleteConfirmation,
-    requestDelete,
-    confirmDelete,
-    cancelDelete,
-  } = useTodos();
+  const dispatch = useAppDispatch();
+
+  const filter = useAppSelector(selectFilter);
+  const filteredTodos = useAppSelector(selectFilteredTodos);
+  const stats = useAppSelector(selectStats);
+  const deleteConfirmation = useAppSelector(selectDeleteConfirmation);
 
   const [newTask, setNewTask] = useState<string>('');
-  const [filter, setFilter] = useState<Filter>('all');
   const [editId, setEditId] = useState<string | null>(null);
-
-  // фильтруем задачи здесь
-  const filteredTodos = useMemo(() => {
-    if (!todos) return [];
-    switch (filter) {
-      case 'active':
-        return todos.filter((t) => !t.completed);
-      case 'completed':
-        return todos.filter((t) => t.completed);
-      case 'all':
-      default:
-        return todos;
-    }
-  }, [todos, filter]);
 
   return (
     <div className="p-lg mx-auto flex max-w-2xl flex-col gap-10">
@@ -52,22 +48,25 @@ export const TodoApp = () => {
           newTodo={newTask}
           onTodoChange={setNewTask}
           onAdd={() => {
-            addTodo(newTask);
+            dispatch(addTodo(newTask));
             setNewTask('');
           }}
         />
 
         {/* Фильтры*/}
-        <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
+        <TodoFilter
+          currentFilter={filter}
+          onFilterChange={(f) => dispatch(setFilter(f))}
+        />
         {/* Список задач */}
         <TodoList
           todos={filteredTodos}
           filter={filter}
           editId={editId}
-          onToggle={toggleTodo}
-          onDelete={requestDelete}
+          onToggle={(id) => dispatch(toggleTodo(id))}
+          onDelete={(todo) => dispatch(requestDelete(todo))}
           onEdit={setEditId}
-          onUpdate={updateTodo}
+          onUpdate={(id, title) => dispatch(updateTodo({ id, title }))}
           onCancel={() => setEditId(null)}
           onSave={() => setEditId(null)}
         />
@@ -75,8 +74,8 @@ export const TodoApp = () => {
         <TodoConfirmModal
           isOpen={deleteConfirmation.isOpen}
           title={deleteConfirmation.todoTitle}
-          onConfirm={confirmDelete}
-          onCancel={cancelDelete}
+          onConfirm={() => dispatch(confirmDelete())}
+          onCancel={() => dispatch(cancelDelete())}
         />
       </div>
     </div>

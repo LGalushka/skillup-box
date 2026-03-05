@@ -1,13 +1,13 @@
 import { memo } from 'react';
-import { type Filter } from '../TodoApp';
-import type { Todo } from '../types';
+
+import type { Filter, Todo } from '../types';
 import { TodoItem } from './TodoItem';
 interface TodoListProps {
   todos: Todo[];
   filter: Filter;
   editId: string | null;
   onToggle: (id: string) => void;
-  onDelete: (id: string, title: string) => void;
+  onDelete: (todo: Todo) => void;
   onEdit: (id: string) => void;
   onUpdate: (id: string, title: string) => void;
   onCancel: () => void;

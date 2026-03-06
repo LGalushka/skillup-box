@@ -7,9 +7,6 @@ import {
   confirmDelete,
   updateTodo,
   cancelDelete,
-} from '../../store/slices/todoSlice';
-
-import {
   selectFilter,
   selectDeleteConfirmation,
   selectStats,

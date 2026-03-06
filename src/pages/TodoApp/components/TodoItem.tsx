@@ -2,7 +2,7 @@ import { CheckCircle2, Circle, EditIcon, Trash2Icon } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import type { Todo } from '../types';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 interface TodoItemProps {
   item: Todo;
@@ -28,20 +28,22 @@ export const TodoItem = memo(
   }: TodoItemProps) => {
     console.log(`Рендер задачи: ${item.title}`);
 
+    const [localTitle, setLocalTitle] = useState(item.title);
+
+    useEffect(() => {
+      setLocalTitle(item.title);
+    }, [isEditing, item.title]);
+
     return (
-      <li
-        key={item.id}
-        className="group border-border-color bg-card hover:border-primary/30 flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm"
-      >
+      <li className="group border-border-color bg-card hover:border-primary/30 flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm">
         {isEditing ? (
           <>
             <Input
               type="text"
-              value={item.title}
-              onChange={(e) => onUpdate(item.id, e.target.value)}
+              value={localTitle}
+              onChange={(e) => setLocalTitle(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') onSave();
-                if (e.key === 'Escape') onCancel();
+                if (e.key === 'Enter') onUpdate(item.id, localTitle);
               }}
             />
             <div className="flex gap-2">

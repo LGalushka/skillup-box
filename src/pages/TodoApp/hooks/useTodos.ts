@@ -1,5 +1,5 @@
 // чтобы Todo был доступен везде
-
+// @deprecated — заменён Redux todoSlice
 import { useCallback, useMemo, useState } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import type { Todo } from '../types';

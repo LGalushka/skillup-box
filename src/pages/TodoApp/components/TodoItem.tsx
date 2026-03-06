@@ -2,13 +2,13 @@ import { CheckCircle2, Circle, EditIcon, Trash2Icon } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import type { Todo } from '../types';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 interface TodoItemProps {
   item: Todo;
   isEditing: boolean;
   onToggle: (id: string) => void;
-  onDelete: (id: string, title: string) => void;
+  onDelete: (todo: Todo) => void;
   onEdit: (id: string) => void;
   onUpdate: (id: string, title: string) => void;
   onCancel: () => void;
@@ -28,20 +28,22 @@ export const TodoItem = memo(
   }: TodoItemProps) => {
     console.log(`Рендер задачи: ${item.title}`);
 
+    const [localTitle, setLocalTitle] = useState(item.title);
+
+    useEffect(() => {
+      setLocalTitle(item.title);
+    }, [isEditing, item.title]);
+
     return (
-      <li
-        key={item.id}
-        className="group border-border-color bg-card hover:border-primary/30 flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm"
-      >
+      <li className="group border-border-color bg-card hover:border-primary/30 flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-sm">
         {isEditing ? (
           <>
             <Input
               type="text"
-              value={item.title}
-              onChange={(e) => onUpdate(item.id, e.target.value)}
+              value={localTitle}
+              onChange={(e) => setLocalTitle(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') onSave();
-                if (e.key === 'Escape') onCancel();
+                if (e.key === 'Enter') onUpdate(item.id, localTitle);
               }}
             />
             <div className="flex gap-2">
@@ -80,7 +82,7 @@ export const TodoItem = memo(
             </Button>
             <Button
               variant="secondary"
-              onClick={() => onDelete(item.id, item.title)}
+              onClick={() => onDelete(item)}
               className="hover:bg-destructive opacity-0 transition-all group-hover:opacity-100 hover:text-white"
             >
               <Trash2Icon size={16} />

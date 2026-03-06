@@ -13,6 +13,7 @@ import {
 import habitReducer from './slices/habitSlice';
 import todoReducer from './slices/todoSlice';
 import movieReducer from './slices/movieSlice';
+import weatherReducer from './slices/weatherSlice';
 
 const todoPersistConfig = {
   key: 'todo',
@@ -32,11 +33,18 @@ const moviePersistConfig = {
   whitelist: ['favorites'],
 };
 
+const weatherPersistConfig = {
+  key: 'weather',
+  storage,
+  witelist: ['data'],
+};
+
 export const store = configureStore({
   reducer: {
     todo: persistReducer(todoPersistConfig, todoReducer),
     habit: persistReducer(habutPersistConfig, habitReducer),
     movie: persistReducer(moviePersistConfig, movieReducer),
+    weather: persistReducer(weatherPersistConfig, weatherReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

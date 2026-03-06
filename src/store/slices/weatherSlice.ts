@@ -6,6 +6,7 @@ import {
 import type { WeatherResponse } from '../../pages/WeatherApp/types/weather';
 
 import { fetchWeatherData } from '../../pages/WeatherApp/api';
+import { REHYDRATE } from 'redux-persist';
 
 export const searchWeather = createAsyncThunk<
   WeatherResponse,
@@ -69,6 +70,9 @@ const weatherSlice = createSlice({
           state.error = action.payload ?? 'Ошибка загрузки';
           state.data = null;
         }
+      })
+      .addCase(REHYDRATE, (state) => {
+        state.error = null;
       });
   },
 });

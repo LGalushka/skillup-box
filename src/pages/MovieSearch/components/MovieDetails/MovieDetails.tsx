@@ -1,29 +1,41 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useMovieDetails } from '../../hooks/useMovieDetails';
+
 import { Button } from '../../../../components/ui/Button';
 import { Heart, MoveLeftIcon } from 'lucide-react';
-import { useLocalStorageMovie } from '../../hooks/useLocalStorageMovies';
+
 import type { OmdbMovieBase } from '../../types';
+
+import {
+  selectCurrentMovie,
+  selectDetailsLoading,
+  selectDetailsError,
+  selectFavorites,
+} from '../../../../store/selectors/movieSelectors';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { useEffect } from 'react';
+import {
+  fetchDetails,
+  toggleFavorite,
+} from '../../../../store/slices/movieSlice';
 
 export const MovieDetails = () => {
   const { imdbID } = useParams<{ imdbID: string }>();
   const navigate = useNavigate();
-  const { data, loading, error } = useMovieDetails(imdbID ?? '');
-  const [favorites, setFavorites] = useLocalStorageMovie<OmdbMovieBase[]>(
-    'movie-favorites',
-    []
+  const dispatch = useAppDispatch();
+
+  const data = useAppSelector(selectCurrentMovie);
+  const loading = useAppSelector(selectDetailsLoading);
+  const error = useAppSelector(selectDetailsError);
+  const favorites = useAppSelector(selectFavorites);
+
+  useEffect(() => {
+    if (!imdbID) return;
+    dispatch(fetchDetails(imdbID));
+  }, [imdbID, dispatch]);
+
+  const isFavorite = favorites.some(
+    (f: OmdbMovieBase) => f.imdbID === data?.imdbID
   );
-
-  const isFavorite = favorites.some((f) => f.imdbID === data?.imdbID);
-
-  function toggleFavorite() {
-    if (!data) return;
-    setFavorites((prev) =>
-      isFavorite
-        ? prev.filter((f) => f.imdbID !== data.imdbID)
-        : [...prev, data]
-    );
-  }
 
   if (loading)
     return (
@@ -102,7 +114,10 @@ export const MovieDetails = () => {
                 <h1 className="text-2xl leading-tight font-bold text-white">
                   {data.Title}
                 </h1>
-                <button onClick={toggleFavorite} className="ml-10">
+                <button
+                  onClick={() => dispatch(toggleFavorite(data))}
+                  className="ml-10"
+                >
                   <Heart
                     size={22}
                     className={
@@ -131,7 +146,7 @@ export const MovieDetails = () => {
             </div>
             {/* Жанры — теги */}
             <div className="flex flex-wrap gap-2">
-              {data.Genre.split(', ').map((genre) => (
+              {data.Genre.split(', ').map((genre: string) => (
                 <span
                   key={genre}
                   className="rounded-full border border-blue-500/30 bg-blue-500/20 px-2 py-1 text-xs text-blue-300"

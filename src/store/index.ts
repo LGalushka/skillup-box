@@ -12,6 +12,7 @@ import {
 } from 'redux-persist';
 import habitReducer from './slices/habitSlice';
 import todoReducer from './slices/todoSlice';
+import movieReducer from './slices/movieSlice';
 
 const todoPersistConfig = {
   key: 'todo',
@@ -25,10 +26,17 @@ const habutPersistConfig = {
   whitelist: ['habits'],
 };
 
+const moviePersistConfig = {
+  key: 'movie',
+  storage,
+  whitelist: ['favorites'],
+};
+
 export const store = configureStore({
   reducer: {
     todo: persistReducer(todoPersistConfig, todoReducer),
     habit: persistReducer(habutPersistConfig, habitReducer),
+    movie: persistReducer(moviePersistConfig, movieReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

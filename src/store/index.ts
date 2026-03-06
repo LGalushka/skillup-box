@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import todoSlice from './slices/todoSlice';
+
 import { default as storage } from 'redux-persist/lib/storage';
 import {
   FLUSH,
@@ -10,6 +10,8 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
+import habitReducer from './slices/habitSlice';
+import todoReducer from './slices/todoSlice';
 
 const todoPersistConfig = {
   key: 'todo',
@@ -17,9 +19,16 @@ const todoPersistConfig = {
   whitelist: ['todos'],
 };
 
+const habutPersistConfig = {
+  key: 'habit',
+  storage,
+  whitelist: ['habits'],
+};
+
 export const store = configureStore({
   reducer: {
-    todo: persistReducer(todoPersistConfig, todoSlice),
+    todo: persistReducer(todoPersistConfig, todoReducer),
+    habit: persistReducer(habutPersistConfig, habitReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

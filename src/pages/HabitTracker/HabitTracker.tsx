@@ -1,4 +1,18 @@
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+  addHabit,
+  deleteHabit,
+  toggleHabit,
+  renameHabit,
+} from '../../store/slices/habitSlice';
+import {
+  selectStats,
+  selectActivityData,
+  selectIncompleteHabits,
+  selectToday,
+  getStreak,
+} from '../../store/selectors/habitSelectors';
 import {
   HabitActivityChart,
   HabitForm,
@@ -7,30 +21,22 @@ import {
   HabitReminderBanner,
   HabitStats,
 } from './components';
-import { useHabits } from './hooks';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const HabitTracker = () => {
-  const {
-    habits,
-    last7Days,
-    stats,
-    activityData,
-    today,
-    addHabit,
-    deleteHabit,
-    toggleHabit,
-    getStreak,
-    renameHabit,
-    incompleteHabits,
-  } = useHabits();
+  const dispatch = useAppDispatch();
+
+  const habits = useAppSelector((state) => state.habit.habits);
+  const stats = useAppSelector(selectStats);
+  const activityData = useAppSelector(selectActivityData);
+  const incompleteHabits = useAppSelector(selectIncompleteHabits);
+  const today = useAppSelector(selectToday);
+
+  const last7Days = activityData.map((d) => d.date);
 
   const [editingID, setEditingID] = useState<string | null>(null);
   const [showReminder, setShowReminder] = useState<boolean>(true);
-
-  const startEditing = (id: string) => {
-    setEditingID(id);
-  };
 
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-8">
@@ -62,7 +68,7 @@ export const HabitTracker = () => {
       <HabitActivityChart data={activityData} />
 
       {/* Форма добавления */}
-      <HabitForm onAdd={addHabit} />
+      <HabitForm onAdd={(name) => dispatch(addHabit(name))} />
 
       {/* Список привычек */}
       <HabitList
@@ -70,11 +76,11 @@ export const HabitTracker = () => {
         last7Days={last7Days}
         today={today}
         editingID={editingID}
-        onToggle={toggleHabit}
-        onDelete={deleteHabit}
-        onStartEdit={startEditing}
+        onToggle={(id) => dispatch(toggleHabit({ id, date: today }))}
+        onDelete={(id) => dispatch(deleteHabit(id))}
+        onStartEdit={setEditingID}
         onSaveEdit={(id, name) => {
-          renameHabit(id, name);
+          dispatch(renameHabit({ id, newName: name }));
           setEditingID(null);
         }}
         onCancelEdit={() => setEditingID(null)}

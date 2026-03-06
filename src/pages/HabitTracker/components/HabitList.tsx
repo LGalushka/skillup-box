@@ -1,5 +1,5 @@
 import { Stars } from 'lucide-react';
-import type { Habit } from '../hooks/useHabits';
+import type { Habit } from '../../../store/slices/habitSlice';
 import { HabitCard } from './HabitCard';
 
 interface HabitListProps {
@@ -38,7 +38,7 @@ export const HabitList = ({
           streak={getStreak(habit.completedDates)}
           editingID={editingID}
           onToggle={onToggle}
-          onDelete={(id) => confirm('Удалить,') && onDelete(id)}
+          onDelete={(id) => confirm('Удалить') && onDelete(id)}
           onStartEdit={onStartEdit}
           onSaveEdit={onSaveEdit}
           onCancelEdit={onCancelEdit}

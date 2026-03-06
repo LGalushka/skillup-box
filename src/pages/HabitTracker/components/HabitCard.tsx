@@ -2,7 +2,7 @@ import { CheckCircle, Flame, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import { useEffect, useState } from 'react';
-import type { Habit } from '../hooks/useHabits';
+import type { Habit } from '../../../store/slices/habitSlice';
 
 interface HabitCardProps {
   habit: Habit;

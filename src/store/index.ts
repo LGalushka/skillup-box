@@ -14,6 +14,7 @@ import habitReducer from './slices/habitSlice';
 import todoReducer from './slices/todoSlice';
 import movieReducer from './slices/movieSlice';
 import weatherReducer from './slices/weatherSlice';
+import cryptoReducer from './slices/cryptoSlice';
 
 const todoPersistConfig = {
   key: 'todo',
@@ -39,12 +40,19 @@ const weatherPersistConfig = {
   witelist: ['data'],
 };
 
+const cryptoPersistConfig = {
+  key: 'crypto',
+  storage,
+  witeliat: ['favorites'],
+};
+
 export const store = configureStore({
   reducer: {
     todo: persistReducer(todoPersistConfig, todoReducer),
     habit: persistReducer(habutPersistConfig, habitReducer),
     movie: persistReducer(moviePersistConfig, movieReducer),
     weather: persistReducer(weatherPersistConfig, weatherReducer),
+    crypto: persistReducer(cryptoPersistConfig, cryptoReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -57,6 +65,7 @@ export const store = configureStore({
           PURGE,
           REGISTER,
         ],
+        ignoredPaths: ['crypto.coins'],
       },
     }),
 });

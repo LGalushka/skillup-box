@@ -3,11 +3,15 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import type {
-  OmdbMovieBase,
-  OmdbSearchResponse,
+import {
+  type OmdbMovieDetails,
+  type OmdbMovieBase,
+  type OmdbSearchResponse,
 } from '../../pages/MovieSearch/types';
-import { fetchMovieData } from '../../pages/MovieSearch/api/movieApi';
+import {
+  fetchMovieData,
+  fetchMovieDetails,
+} from '../../pages/MovieSearch/api/movieApi';
 
 export const searchMovies = createAsyncThunk<
   OmdbSearchResponse,
@@ -25,9 +29,27 @@ export const searchMovies = createAsyncThunk<
   }
 });
 
+export const fetchDetails = createAsyncThunk<
+  OmdbMovieDetails,
+  string,
+  { rejectValue: string }
+>('movie/fetchDetails', async (imdbID, { rejectWithValue, signal }) => {
+  try {
+    return await fetchMovieDetails(imdbID, { signal });
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') throw err;
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Ошибка загрузки'
+    );
+  }
+});
+
 interface MovieState {
   movies: OmdbMovieBase[];
   favorites: OmdbMovieBase[];
+  currentMovie: OmdbMovieDetails | null;
+  detailsLoading: boolean;
+  detailsError: string | null;
   loading: boolean;
   error: string | null;
   query: string;
@@ -38,9 +60,12 @@ interface MovieState {
 const initialState: MovieState = {
   movies: [],
   favorites: [],
+  currentMovie: null,
+  detailsLoading: false,
+  detailsError: null,
   loading: false,
   error: null,
-  query: 'inception', // ✅ дефолтный запрос как было
+  query: 'inception',
   typeFilter: 'all',
   totalResults: 0,
 };
@@ -91,6 +116,21 @@ const movieSlice = createSlice({
         if (action.error.name !== 'AbortError') {
           state.error = action.payload ?? 'Ошибка загрузки';
           state.movies = [];
+        }
+      })
+      .addCase(fetchDetails.pending, (state) => {
+        state.detailsLoading = true;
+        state.detailsError = null;
+        state.currentMovie = null;
+      })
+      .addCase(fetchDetails.fulfilled, (state, action) => {
+        state.detailsLoading = false;
+        state.currentMovie = action.payload;
+      })
+      .addCase(fetchDetails.rejected, (state, action) => {
+        state.detailsLoading = false;
+        if (action.error.name !== 'AbortError') {
+          state.detailsError = action.payload ?? 'Ошибка загрузки';
         }
       });
   },

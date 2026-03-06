@@ -1,65 +1,71 @@
-import { useMemo, useState } from 'react';
-import { fetchCoins } from '../../api/cryptoApi';
-import { useCryptoPolling } from '../../hooks/useCryptoPolling';
-import type { Coin } from '../../types/crypto';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import {
+  fetchCoinsThunk,
+  setSearch,
+  toggleFavorite,
+} from '../../../../store/slices/cryptoSlice';
+import {
+  selectFilteredCoins,
+  selectFavorites,
+  selectCryptoLoading,
+  selectCryptoError,
+  selectLastUpdated,
+} from '../../../../store/selectors/cryptoSelectors';
 import { CoinCard } from '../CoinCard/CoinCard';
 import CryptoHeader from '../CryptoHeader/CryptoHeader';
 import { MarketCapChart } from '../MarketCapChart';
 import { CoinsTable } from '../CoinsTable';
-import { useLocalStorageCoin } from '../../hooks/useLocalStorageCoin';
 import { CoinModal } from '../CoinModal';
+import type { Coin, CoinBase } from '../../types/crypto';
+import { useDebounce } from '../../../MovieSearch/hooks';
 
 export const CryptoTrack = () => {
-  const [search, setSearch] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const [localSearch, setLocalSearch] = useState<string>('');
+  const debounceSearch = useDebounce(localSearch, 300);
 
-  const { data, loading, error, lastUpdated } = useCryptoPolling<Coin[]>(
-    (signal) => fetchCoins({ signal })
-  );
+  // ✅ Redux вместо useCryptoPolling + useLocalStorageCoin
+  const filteredCoins = useAppSelector(selectFilteredCoins);
+  const favorites = useAppSelector(selectFavorites);
 
-  const [favorites, setFavorites] = useLocalStorageCoin<string[]>(
-    'crypto-favorites',
-    []
-  );
-  const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
+  const loading = useAppSelector(selectCryptoLoading);
+  const error = useAppSelector(selectCryptoError);
+  const lastUpdated = useAppSelector(selectLastUpdated);
 
-  const allCoins = data ?? [];
+  // ✅ UI state
+  const [modalCoin, setModalCoin] = useState<Coin | null>(null);
 
-  const filteredCoins = useMemo(() => {
-    const normalizedSearch = search.trim().toLocaleLowerCase();
-    return normalizedSearch
-      ? allCoins.filter(
-          (coin) =>
-            coin.name.toLowerCase().includes(normalizedSearch) ||
-            coin.symbol.toLowerCase().includes(normalizedSearch)
-        )
-      : allCoins.slice(0, 10);
-  }, [search, allCoins]);
+  // ✅ поллинг каждые 30 секунд вместо useCryptoPolling
+  useEffect(() => {
+    dispatch(fetchCoinsThunk());
+    const interval = setInterval(() => {
+      dispatch(fetchCoinsThunk());
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [dispatch]);
 
-  const topCoins = allCoins.slice(0, 3);
+  useEffect(() => {
+    dispatch(setSearch(debounceSearch));
+  }, [debounceSearch, dispatch]);
 
-  const toggleFavorite = (coinID: string) => {
-    setFavorites((prev) =>
-      prev.includes(coinID)
-        ? prev.filter((id) => id !== coinID)
-        : [...prev, coinID]
-    );
-  };
+  // ✅ топ 3 монеты из всех монет
+  const topCoins = useAppSelector((state) => state.crypto.coins.slice(0, 3));
 
   return (
     <div className="m-6">
       <CryptoHeader
-        search={search}
-        onSearchChange={setSearch}
-        lastUpdated={lastUpdated}
+        search={localSearch}
+        onSearchChange={setLocalSearch}
+        lastUpdated={lastUpdated ? new Date(lastUpdated) : null} // ✅ string → Date
       />
 
       {loading && <p>Загружаем...</p>}
       {error && <p className="text-red-500">{error}</p>}
-      {/**Список монет */}
 
       {topCoins.length > 0 ? (
         <div className="mb-6 grid grid-cols-3 gap-4">
-          {topCoins.map((coin) => (
+          {topCoins.map((coin: Coin) => (
             <CoinCard key={coin.id} crypto={coin} />
           ))}
         </div>
@@ -71,17 +77,20 @@ export const CryptoTrack = () => {
         </div>
       )}
 
-      <MarketCapChart coins={allCoins} />
+      <MarketCapChart coins={useAppSelector((state) => state.crypto.coins)} />
 
       <CoinsTable
         coins={filteredCoins}
-        favorites={favorites}
-        onToggleFavorite={toggleFavorite}
-        onSelectCoin={setSelectedCoin}
+        favorites={favorites.map((f: CoinBase) => f.id)} // ✅ CoinsTable ожидает string[]
+        onToggleFavorite={(coinId) => {
+          const coin = filteredCoins.find((c: Coin) => c.id === coinId);
+          if (coin) dispatch(toggleFavorite(coin));
+        }}
+        onSelectCoin={setModalCoin}
       />
 
-      {selectedCoin && (
-        <CoinModal coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
+      {modalCoin && (
+        <CoinModal coin={modalCoin} onClose={() => setModalCoin(null)} />
       )}
     </div>
   );

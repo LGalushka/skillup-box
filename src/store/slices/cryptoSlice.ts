@@ -117,6 +117,11 @@ const cryptoSlice = createSlice({
         if (action.error.name !== 'AbortError') {
           state.detailsError = action.payload ?? 'Ошибка загрузки';
         }
+      })
+      .addCase(fetchCoinsThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.coins = action.payload.slice(0, 100);
+        state.lastUpdated = new Date().toISOString();
       });
   },
 });

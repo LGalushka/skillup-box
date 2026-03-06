@@ -1,4 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+  setCity,
+  claerError,
+  searchWeather,
+} from '../../store/slices/weatherSlice';
+import {
+  selectWeatherData,
+  selectWeatherLoading,
+  selectWeatherError,
+  selectCity,
+} from '../../store/selectors/weatherSelectors';
 
 import {
   WeatherWelcomeScreen,
@@ -7,16 +19,32 @@ import {
   WeatherSearch,
   WeatherErrorAnimate,
 } from './components';
-import { useWeather } from './hooks/useWeather';
 
 export const WeatherApp = () => {
-  const { data, loading, error, setCity } = useWeather();
+  const dispatch = useAppDispatch();
+
+  const data = useAppSelector(selectWeatherData);
+  const loading = useAppSelector(selectWeatherLoading);
+  const error = useAppSelector(selectWeatherError);
+  const city = useAppSelector(selectCity);
+
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  useEffect(() => {
+    if (!city.trim()) return;
+    dispatch(searchWeather({ city }));
+  }, [city, dispatch]);
+
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => dispatch(claerError()), 4000);
+    return () => clearTimeout(timer);
+  }, [error, dispatch]);
 
   const handleSearch = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      setCity(searchQuery);
+      dispatch(setCity(searchQuery));
       setSearchQuery('');
     }
   };

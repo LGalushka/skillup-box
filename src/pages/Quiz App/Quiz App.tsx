@@ -1,54 +1,80 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { QuestionsList } from './components/QuestionsList/QuestionsList';
 import { QuizHeader } from './components/QuizHeader/QuizHeader';
-import { useQuiz } from './hooks/useQuiz';
-import { useQuizStats } from './hooks/useQuizStats';
+
 import { QuizStatsBlock1 } from './components/QuizStatsBlock1/QuizStatsBlock1';
 import { QuizStatsBlock2 } from './components/QuizStatsBlock2/QuizStatsBlock2';
+import {
+  fetchQuizeThunk,
+  answerQuestion,
+  nextQuestion,
+  tick,
+  restartGame,
+  setDifficulty,
+  saveStats,
+} from '../../store/slices/quizSlice';
+
+import {
+  selectQuizStatus,
+  selectQuestions,
+  selectSelectedAnswer,
+  selectCurrentIndex,
+  selectScore,
+  selectTimeLeft,
+  selectDifficulty,
+  selectQuizStats,
+  selectCurrentQuestion,
+  selectQuizLoading,
+  selectQuizError,
+} from '../../store/selectors/quizSelectors';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 export const QuizApp = () => {
-  const {
-    questions,
-    currentIndex,
-    selectedAnswer,
-    status,
-    score,
-    timeLeft,
-    correctAnswers,
-    loading,
-    error,
-    dispatch,
-    startGame,
-  } = useQuiz({ amount: 10, difficulty: 'medium' });
+  const dispatch = useAppDispatch();
 
-  const currentQuestion = questions[currentIndex];
+  const status = useAppSelector(selectQuizStatus);
+  const questions = useAppSelector(selectQuestions);
+  const selectedAnswer = useAppSelector(selectSelectedAnswer);
+  const currentIndex = useAppSelector(selectCurrentIndex);
+  const score = useAppSelector(selectScore);
+  const timeLeft = useAppSelector(selectTimeLeft);
 
-  const { stats, saveResult } = useQuizStats();
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(
-    'medium'
-  );
+  const difficulty = useAppSelector(selectDifficulty);
+  const stats = useAppSelector(selectQuizStats);
+  const currentQuestion = useAppSelector(selectCurrentQuestion);
+  const loading = useAppSelector(selectQuizLoading);
+  const error = useAppSelector(selectQuizError);
 
-  const handleAnswer = (answer: string) => {
-    dispatch({ type: 'ANSWER', payload: answer });
-    setTimeout(() => {
-      dispatch({ type: 'NEXT' });
-    }, 1500);
-  };
+  useEffect(() => {
+    if (status !== 'playing') return;
+    if (selectedAnswer !== null) return;
+    const timer = setInterval(() => {
+      dispatch(tick());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [status, selectedAnswer, currentIndex, dispatch]);
 
   useEffect(() => {
     if (status === 'finished') {
-      saveResult(score, difficulty, correctAnswers, questions.length);
+      dispatch(saveStats());
     }
-  }, [status]);
+  }, [status, dispatch]);
+
+  const handelStartGame = () => {
+    dispatch(restartGame());
+    dispatch(fetchQuizeThunk({ amount: 10, difficulty }));
+  };
+
+  const handelAnswer = (answer: string) => {
+    dispatch(answerQuestion(answer));
+    setTimeout(() => {
+      dispatch(nextQuestion());
+    }, 1500);
+  };
 
   return (
     <div className="bg-main min-h-screen p-6">
-      <QuizHeader
-        questions={questions ?? []}
-        currentIndex={currentIndex}
-        timeLeft={timeLeft}
-        score={score}
-      />
+      <QuizHeader questions={questions ?? []} currentIndex={currentIndex} />
 
       {loading && (
         <div className="mt-20 flex flex-col items-center gap-4">
@@ -69,7 +95,7 @@ export const QuizApp = () => {
             {(['easy', 'medium', 'hard'] as const).map((d) => (
               <button
                 key={d}
-                onClick={() => setDifficulty(d)}
+                onClick={() => dispatch(setDifficulty(d))}
                 className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
                   difficulty === d
                     ? d === 'easy'
@@ -90,7 +116,7 @@ export const QuizApp = () => {
           </div>
           <button
             className="bg-primary hover:bg-primary-hover rounded-lg px-8 py-3 font-bold text-white transition-colors"
-            onClick={startGame}
+            onClick={handelStartGame}
           >
             Начать игру →
           </button>
@@ -109,7 +135,7 @@ export const QuizApp = () => {
         <QuestionsList
           currentQuestion={currentQuestion}
           selectedAnswer={selectedAnswer}
-          onAnswer={handleAnswer}
+          onAnswer={handelAnswer}
         />
       )}
 
@@ -121,7 +147,7 @@ export const QuizApp = () => {
           </p>
           <button
             className="bg-primary rounded-lg px-6 py-2 text-white"
-            onClick={startGame}
+            onClick={handelStartGame}
           >
             Играть снова
           </button>

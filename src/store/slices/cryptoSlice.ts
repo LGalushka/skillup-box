@@ -94,8 +94,8 @@ const cryptoSlice = createSlice({
       })
       .addCase(fetchCoinsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.coins = action.payload;
-        state.lastUpdated = new Date().toISOString(); // ✅ string не Date
+        state.coins = action.payload.slice(0, 100); // ✅ здесь правильно
+        state.lastUpdated = new Date().toISOString();
       })
       .addCase(fetchCoinsThunk.rejected, (state, action) => {
         state.loading = false;
@@ -117,11 +117,6 @@ const cryptoSlice = createSlice({
         if (action.error.name !== 'AbortError') {
           state.detailsError = action.payload ?? 'Ошибка загрузки';
         }
-      })
-      .addCase(fetchCoinsThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.coins = action.payload.slice(0, 100);
-        state.lastUpdated = new Date().toISOString();
       });
   },
 });

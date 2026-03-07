@@ -65,7 +65,7 @@ const initialState: QuizState = {
   },
 };
 
-const quizSlise = createSlice({
+const quizSlice = createSlice({
   name: 'quiz',
   initialState,
   reducers: {
@@ -174,5 +174,5 @@ export const {
   restartGame,
   setDifficulty,
   saveStats,
-} = quizSlise.actions;
-export default quizSlise.reducer;
+} = quizSlice.actions;
+export default quizSlice.reducer;

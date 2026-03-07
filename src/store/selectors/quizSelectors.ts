@@ -13,5 +13,8 @@ export const selectCorrectAnswers = (state: RootState) =>
   state.quiz.correctAnswers;
 export const selectDifficulty = (state: RootState) => state.quiz.difficulty;
 export const selectQuizStats = (state: RootState) => state.quiz.stats;
-export const selectCurrentQuestion = (state: RootState) =>
-  state.quiz.questions[state.quiz.currentIndex] ?? null;
+export const selectCurrentQuestion = (state: RootState) => {
+  const { questions, currentIndex } = state.quiz;
+  if (!questions.length || currentIndex >= questions.length) return null;
+  return questions[currentIndex];
+};

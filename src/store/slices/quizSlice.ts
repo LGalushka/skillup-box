@@ -133,7 +133,7 @@ const quizSlice = createSlice({
       stats.totalScore += state.score;
       stats.bestScore = Math.max(stats.bestScore, state.score);
       if (diff && diff in stats.byDifficulty) {
-        stats.byDifficulty[diff].played += 1;
+        stats.byDifficulty[diff].played += state.questions.length;
         stats.byDifficulty[diff].correct += state.correctAnswers;
       }
     },

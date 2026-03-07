@@ -3,16 +3,9 @@ import type { Question } from '../../types/quiz';
 interface QuizHeaderProps {
   questions: Question[];
   currentIndex: number;
-  timeLeft: number;
-  score: number;
 }
 
-export function QuizHeader({
-  questions,
-  currentIndex,
-  timeLeft,
-  score,
-}: QuizHeaderProps) {
+export function QuizHeader({ questions, currentIndex }: QuizHeaderProps) {
   const total = questions?.length ?? 0;
   const progress = total > 0 ? ((currentIndex + 1) / total) * 100 : 0;
 

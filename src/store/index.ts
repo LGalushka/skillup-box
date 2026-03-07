@@ -15,6 +15,7 @@ import todoReducer from './slices/todoSlice';
 import movieReducer from './slices/movieSlice';
 import weatherReducer from './slices/weatherSlice';
 import cryptoReducer from './slices/cryptoSlice';
+import quizReducer from './slices/quizSlice';
 
 const todoPersistConfig = {
   key: 'todo',
@@ -43,7 +44,13 @@ const weatherPersistConfig = {
 const cryptoPersistConfig = {
   key: 'crypto',
   storage,
-  witeliat: ['favorites'],
+  witelist: ['favorites'],
+};
+
+const quizPersistConfig = {
+  key: 'quiz',
+  storage,
+  witelist: ['stats'],
 };
 
 export const store = configureStore({
@@ -53,6 +60,7 @@ export const store = configureStore({
     movie: persistReducer(moviePersistConfig, movieReducer),
     weather: persistReducer(weatherPersistConfig, weatherReducer),
     crypto: persistReducer(cryptoPersistConfig, cryptoReducer),
+    quiz: persistReducer(quizPersistConfig, quizReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
